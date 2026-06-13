@@ -1,0 +1,19 @@
+<h1>Student Form</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Enter name">
+    <button type="submit">Save</button>
+</form>
+
+<hr>
+
+<h2>Student List</h2>
+
+<ul>
+    {% for student in students %}
+        <li>{{ student.name }}</li>
+    {% endfor %}
+</ul>
+
+</body>
