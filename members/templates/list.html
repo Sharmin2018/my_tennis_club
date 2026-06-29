@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3>User: {{ request.user }}</h3>
+<h2>Student List</h2>
+
+<a href="/add/" class="btn btn-primary mb-3">
+    Add Student
+</a>
+
+<form method="GET" class="mb-3">
+
+    <div class="input-group">
+        <input type="text"
+               name="q"
+               class="form-control"
+               placeholder="Search by name or email">
+
+        <button class="btn btn-primary" type="submit">
+            Search
+        </button>
+    </div>
+
+</form>
+
+<table class="table table-bordered table-striped">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Age</th>
+        <th>Action</th>
+    </tr>
+
+    {% for student in students %}
+    <tr>
+        <td>{{ student.id }}</td>
+        <td>{{ student.name }}</td>
+        <td>{{ student.email }}</td>
+        <td>{{ student.age }}</td>
+        <td>
+            <a href="/edit/{{ student.id }}/"
+               class="btn btn-warning btn-sm">
+               Edit
+            </a>
+
+            <a href="/delete/{{ student.id }}/"
+               class="btn btn-danger btn-sm">
+               Delete
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
