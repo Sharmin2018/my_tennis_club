@@ -4,45 +4,66 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from .forms import StudentForm
+
 
 
 
 @login_required(login_url='/login/')
 
+
 def student_list(request):
-    print("USER:", request.user)
     query = request.GET.get('q')
 
     if query:
         students = Student.objects.filter(
             Q(name__icontains=query) |
-            Q(email__icontains=query)
+            Q(email__icontains=query) |
+            Q(roll__icontains=query) |
+            Q(registration_no__icontains=query)
         )
     else:
         students = Student.objects.all()
 
-    return render(request, 'list.html', {'students': students})
+    return render(request, 'list.html', {
+        'students': students
+    })
+
 
 @login_required(login_url='/login/')
 def add_student(request):
+
     if request.method == "POST":
-        name = request.POST['name']
-        email = request.POST['email']
-        age = request.POST['age']
-        Student.objects.create(name=name, email=email, age=age)
-        return redirect('list')
-    return render(request, 'add.html')
+
+        form = StudentForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+            return redirect('list')
+
+    else:
+        form = StudentForm()
+
+    return render(request, 'add.html', {'form': form})
+
+
 
 @login_required(login_url='/login/')
 def edit_student(request, id):
     student = get_object_or_404(Student, id=id)
+
     if request.method == "POST":
-        student.name = request.POST['name']
-        student.email = request.POST['email']
-        student.age = request.POST['age']
-        student.save()
-        return redirect('list')
-    return render(request, 'edit.html', {'student': student})
+        form = StudentForm(request.POST, request.FILES, instance=student)
+
+        if form.is_valid():
+            form.save()
+            return redirect('list')
+
+    else:
+        form = StudentForm(instance=student)
+
+    return render(request, 'edit.html', {'form': form})
+
 
 @login_required(login_url='/login/')
 def delete_student(request, id):

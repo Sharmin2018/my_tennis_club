@@ -4,25 +4,65 @@
 
 <h2>Add Student</h2>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
     <div class="mb-3">
         <label>Name</label>
-        <input type="text" name="name" class="form-control">
+        {{ form.name }}
+    </div>
+
+    <div class="mb-3">
+        <label>Roll</label>
+        {{ form.roll }}
+    </div>
+
+    <div class="mb-3">
+        <label>Registration No</label>
+        {{ form.registration_no }}
+    </div>
+
+    <div class="mb-3">
+        <label>Session</label>
+        {{ form.session }}
+    </div>
+
+    <div class="mb-3">
+        <label>Class</label>
+        {{ form.student_class }}
     </div>
 
     <div class="mb-3">
         <label>Email</label>
-        <input type="email" name="email" class="form-control">
+        {{ form.email }}
     </div>
 
     <div class="mb-3">
-        <label>Age</label>
-        <input type="number" name="age" class="form-control">
+        <label>Phone</label>
+        {{ form.phone }}
     </div>
 
-    <button class="btn btn-success">
+    <div class="mb-3">
+        <label>Date of Birth</label>
+        {{ form.dob }}
+    </div>
+
+    <div class="mb-3">
+        <label>Religion</label>
+        {{ form.religion }}
+    </div>
+
+    <div class="mb-3">
+        <label>Gender</label>
+        {{ form.gender }}
+    </div>
+
+    <div class="mb-3">
+        <label>Photo</label>
+        {{ form.photo }}
+    </div>
+
+    <button type="submit" class="btn btn-success">
         Save
     </button>
 

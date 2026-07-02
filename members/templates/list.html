@@ -5,53 +5,101 @@
 <h3>User: {{ request.user }}</h3>
 <h2>Student List</h2>
 
-<a href="/add/" class="btn btn-primary mb-3">
+<a href="{% url 'add' %}" class="btn btn-primary mb-3">
     Add Student
 </a>
 
 <form method="GET" class="mb-3">
-
     <div class="input-group">
-        <input type="text"
-               name="q"
-               class="form-control"
-               placeholder="Search by name or email">
+        <input
+            type="text"
+            name="q"
+            class="form-control"
+            placeholder="Search by Name, Email, Roll or Registration No"
+            value="{{ request.GET.q }}"
+        >
 
         <button class="btn btn-primary" type="submit">
             Search
         </button>
     </div>
-
 </form>
 
-<table class="table table-bordered table-striped">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Age</th>
-        <th>Action</th>
-    </tr>
+<table class="table table-bordered table-striped align-middle">
+
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Photo</th>
+            <th>Name</th>
+            <th>Roll</th>
+            <th>Registration No</th>
+            <th>Session</th>
+            <th>Class</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Date of Birth</th>
+            <th>Religion</th>
+            <th>Gender</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
 
     {% for student in students %}
-    <tr>
-        <td>{{ student.id }}</td>
-        <td>{{ student.name }}</td>
-        <td>{{ student.email }}</td>
-        <td>{{ student.age }}</td>
-        <td>
-            <a href="/edit/{{ student.id }}/"
-               class="btn btn-warning btn-sm">
-               Edit
-            </a>
+        <tr>
 
-            <a href="/delete/{{ student.id }}/"
-               class="btn btn-danger btn-sm">
-               Delete
-            </a>
-        </td>
-    </tr>
+            <td>{{ student.id }}</td>
+
+            <td>
+                {% if student.photo %}
+                    <img src="{{ student.photo.url }}"
+                         width="60"
+                         height="60"
+                         class="rounded-circle">
+                {% else %}
+                    No Photo
+                {% endif %}
+            </td>
+
+            <td>{{ student.name }}</td>
+            <td>{{ student.roll }}</td>
+            <td>{{ student.registration_no }}</td>
+            <td>{{ student.session }}</td>
+            <td>{{ student.student_class }}</td>
+            <td>{{ student.email }}</td>
+            <td>{{ student.phone }}</td>
+            <td>{{ student.dob }}</td>
+            <td>{{ student.religion }}</td>
+            <td>{{ student.gender }}</td>
+
+            <td>
+                <a href="{% url 'edit' student.id %}"
+                   class="btn btn-warning btn-sm">
+                    Edit
+                </a>
+
+                <a href="{% url 'delete' student.id %}"
+                   class="btn btn-danger btn-sm">
+                    Delete
+                </a>
+            </td>
+
+        </tr>
+
+    {% empty %}
+
+        <tr>
+            <td colspan="13" class="text-center text-danger">
+                No Student Found.
+            </td>
+        </tr>
+
     {% endfor %}
+
+    </tbody>
+
 </table>
 
 {% endblock %}
