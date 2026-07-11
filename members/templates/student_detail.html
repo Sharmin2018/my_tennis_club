@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h3>Student Details</h3>
+        </div>
+
+        <div class="card-body">
+
+            {% if student.photo %}
+                <img src="{{ student.photo.url }}"
+                     width="150"
+                     class="rounded mb-3">
+            {% endif %}
+
+            <table class="table table-bordered">
+
+                <tr>
+                    <th>Name</th>
+                    <td>{{ student.name }}</td>
+                </tr>
+
+                <tr>
+                    <th>Roll</th>
+                    <td>{{ student.roll }}</td>
+                </tr>
+
+                <tr>
+                    <th>Registration No</th>
+                    <td>{{ student.registration_no }}</td>
+                </tr>
+
+                <tr>
+                    <th>Session</th>
+                    <td>{{ student.session }}</td>
+                </tr>
+
+                <tr>
+                    <th>Class</th>
+                    <td>{{ student.student_class }}</td>
+                </tr>
+
+                <tr>
+                    <th>Email</th>
+                    <td>{{ student.email }}</td>
+                </tr>
+
+                <tr>
+                    <th>Phone</th>
+                    <td>{{ student.phone }}</td>
+                </tr>
+
+                <tr>
+                    <th>Date of Birth</th>
+                    <td>{{ student.dob }}</td>
+                </tr>
+
+                <tr>
+                    <th>Religion</th>
+                    <td>{{ student.religion }}</td>
+                </tr>
+
+                <tr>
+                    <th>Gender</th>
+                    <td>{{ student.gender }}</td>
+                </tr>
+
+                <tr>
+                    <th>Created By</th>
+                    <td>{{ student.created_by }}</td>
+                </tr>
+
+            </table>
+
+            <a href="{% url 'list' %}" class="btn btn-secondary">
+                Back
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

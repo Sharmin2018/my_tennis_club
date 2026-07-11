@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card shadow">
+
+<div class="card-header bg-primary text-white">
+
+<h3>Department Details</h3>
+
+</div>
+
+<div class="card-body">
+
+<table class="table table-bordered">
+
+<tr>
+
+<th>Name</th>
+
+<td>{{ department.name }}</td>
+
+</tr>
+
+<tr>
+
+<th>Department Code</th>
+
+<td>{{ department.department_code }}</td>
+
+</tr>
+
+<tr>
+
+<th>Created At</th>
+
+<td>{{ department.created_at }}</td>
+
+</tr>
+
+<tr>
+
+<th>Updated At</th>
+
+<td>{{ department.updated_at }}</td>
+
+</tr>
+
+</table>
+
+<a
+href="{% url 'department_list' %}"
+class="btn btn-secondary">
+
+Back
+
+</a>
+
+</div>
+
+</div>
+
+{% endblock %}

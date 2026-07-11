@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header text-white" style="background-color: coral;">
+
+        <h3>Add Teacher</h3>
+
+    </div>
+
+    <div class="card-body">
+
+        <form
+            method="POST"
+            enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {% for field in form %}
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    {{ field.label }}
+
+                </label>
+
+                {{ field }}
+
+                {% if field.errors %}
+
+                    <div class="text-danger">
+
+                        {{ field.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+            <button
+                type="submit"
+                class="btn btn-success">
+
+                Save Teacher
+
+            </button>
+
+            <a
+                href="{% url 'teacher_list' %}"
+                class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

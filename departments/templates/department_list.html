@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2>Department List</h2>
+
+</div>
+
+<form method="GET" class="mb-3">
+
+    <div class="input-group">
+
+        <input
+            type="text"
+            name="q"
+            class="form-control"
+            placeholder="Search Department"
+            value="{{ request.GET.q }}">
+
+        <button
+            class="btn btn-primary">
+
+            Search
+
+        </button>
+
+    </div>
+
+</form>
+
+<table class="table table-bordered table-hover">
+
+    <thead class="table-dark">
+
+        <tr>
+
+            <th>ID</th>
+
+            <th>Department Name</th>
+
+            <th>Department Code</th>
+
+            <th>Action</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    {% for department in departments %}
+
+        <tr>
+
+            <td>{{ department.id }}</td>
+
+            <td>
+
+                <a href="{% url 'department_detail' department.id %}">
+
+                    {{ department.name }}
+
+                </a>
+
+            </td>
+
+            <td>{{ department.department_code }}</td>
+
+            <td>
+
+                {% if perms.departments.change_department %}
+
+                <a
+                    href="{% url 'department_edit' department.id %}"
+                    class="btn btn-warning btn-sm">
+
+                    Edit
+
+                </a>
+
+                {% endif %}
+
+                {% if perms.departments.delete_department %}
+
+                <a
+                    href="{% url 'department_delete' department.id %}"
+                    class="btn btn-danger btn-sm">
+
+                    Delete
+
+                </a>
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+    {% empty %}
+
+        <tr>
+
+            <td colspan="4"
+                class="text-center text-danger">
+
+                No Department Found.
+
+            </td>
+
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% if is_paginated %}
+
+<nav>
+
+<ul class="pagination justify-content-center">
+
+{% if page_obj.has_previous %}
+
+<li class="page-item">
+
+<a class="page-link"
+href="?q={{ request.GET.q }}&page=1">
+
+First
+
+</a>
+
+</li>
+
+<li class="page-item">
+
+<a class="page-link"
+href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">
+
+Previous
+
+</a>
+
+</li>
+
+{% endif %}
+
+<li class="page-item active">
+
+<span class="page-link">
+
+{{ page_obj.number }}
+
+</span>
+
+</li>
+
+<li class="page-item disabled">
+
+<span class="page-link">
+
+of {{ page_obj.paginator.num_pages }}
+
+</span>
+
+</li>
+
+{% if page_obj.has_next %}
+
+<li class="page-item">
+
+<a class="page-link"
+href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">
+
+Next
+
+</a>
+
+</li>
+
+<li class="page-item">
+
+<a class="page-link"
+href="?q={{ request.GET.q }}&page={{ page_obj.paginator.num_pages }}">
+
+Last
+
+</a>
+
+</li>
+
+{% endif %}
+
+</ul>
+
+</nav>
+
+{% endif %}
+
+{% endblock %}

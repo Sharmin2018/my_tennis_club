@@ -1,14 +1,30 @@
 from django.urls import path
-from django.contrib.auth import views as auth_views
 from . import views
 
-urlpatterns = [
-    path('', views.student_list, name='list'),
-    path('add/', views.add_student, name='add'),
-    path('edit/<int:id>/', views.edit_student, name='edit'),
-    path('delete/<int:id>/', views.delete_student, name='delete'),
+from django.contrib.auth import views as auth_views
+from .views import (
+    StudentListView,
+    StudentCreateView,
+    StudentUpdateView,
+    StudentDeleteView,
+    RegisterView,
+    StudentDetailView,
+)
 
-    path('register/', views.register, name='register'),
+urlpatterns = [
+    path('', StudentListView.as_view(), name='list'),
+
+    path('add/', StudentCreateView.as_view(), name='add'),
+
+    path('edit/<int:id>/', StudentUpdateView.as_view(), name='edit'),
+
+    path('delete/<int:id>/', StudentDeleteView.as_view(), name='delete'),
+
+    path('register/', RegisterView.as_view(), name='register'),
+    
+    path("student/<int:id>/",StudentDetailView.as_view(),name="student_detail",),
+
+    path("dashboard/",views.DashboardView.as_view(),name="dashboard",),
 
     path(
         'login/',
@@ -21,7 +37,9 @@ urlpatterns = [
 
     path(
         'logout/',
-        auth_views.LogoutView.as_view(next_page='login'),
+        auth_views.LogoutView.as_view(
+            next_page='login'
+        ),
         name='logout',
     ),
 ]

@@ -2,12 +2,12 @@
 
 {% block content %}
 
-<h3>User: {{ request.user }}</h3>
+
+
+
+
 <h2>Student List</h2>
 
-<a href="{% url 'add' %}" class="btn btn-primary mb-3">
-    Add Student
-</a>
 
 <form method="GET" class="mb-3">
     <div class="input-group">
@@ -63,7 +63,11 @@
                 {% endif %}
             </td>
 
-            <td>{{ student.name }}</td>
+            <td>
+                <a href="{% url 'student_detail' student.id %}">
+                {{ student.name }}
+                </a>
+            </td>
             <td>{{ student.roll }}</td>
             <td>{{ student.registration_no }}</td>
             <td>{{ student.session }}</td>
@@ -75,15 +79,17 @@
             <td>{{ student.gender }}</td>
 
             <td>
-                <a href="{% url 'edit' student.id %}"
-                   class="btn btn-warning btn-sm">
+                {% if perms.members.change_student %}
+                <a href="{% url 'edit' student.id %}" class="btn btn-warning btn-sm">
                     Edit
                 </a>
+                {% endif %}
 
-                <a href="{% url 'delete' student.id %}"
-                   class="btn btn-danger btn-sm">
-                    Delete
+                {% if perms.members.delete_student %}
+                <a href="{% url 'delete' student.id %}" class="btn btn-danger btn-sm">
+                  Delete
                 </a>
+                {% endif %}
             </td>
 
         </tr>
@@ -101,5 +107,74 @@
     </tbody>
 
 </table>
+
+<!-- Pagination Start -->
+
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+
+        {% if page_obj.has_previous %}
+
+        <li class="page-item">
+            <a class="page-link"
+               href="?q={{ request.GET.q }}&page=1">
+                First
+            </a>
+        </li>
+
+        <li class="page-item">
+            <a class="page-link"
+               href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">
+                Previous
+            </a>
+        </li>
+
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+
+            {% if page_obj.number == num %}
+
+                <li class="page-item active">
+                    <span class="page-link">
+                        {{ num }}
+                    </span>
+                </li>
+
+            {% else %}
+
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?q={{ request.GET.q }}&page={{ num }}">
+                        {{ num }}
+                    </a>
+                </li>
+
+            {% endif %}
+
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+
+        <li class="page-item">
+            <a class="page-link"
+               href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">
+                Next
+            </a>
+        </li>
+
+        <li class="page-item">
+            <a class="page-link"
+               href="?q={{ request.GET.q }}&page={{ page_obj.paginator.num_pages }}">
+                Last
+            </a>
+        </li>
+
+        {% endif %}
+
+    </ul>
+</nav>
+
+<!-- Pagination End -->
 
 {% endblock %}

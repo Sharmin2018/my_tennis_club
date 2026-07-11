@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>
+    {% if form.instance.pk %}
+        Edit Department
+    {% else %}
+        Add Department
+    {% endif %}
+</h2>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <div class="mb-3">
+
+        <label>Department Name</label>
+
+        {{ form.name }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Department Code</label>
+
+        {{ form.department_code }}
+
+    </div>
+
+    <button
+        type="submit"
+        class="btn btn-success">
+
+        Save
+
+    </button>
+
+    <a
+        href="{% url 'department_list' %}"
+        class="btn btn-secondary">
+
+        Cancel
+
+    </a>
+
+</form>
+
+{% endblock %}

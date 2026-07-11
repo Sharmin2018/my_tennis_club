@@ -1,9 +1,10 @@
 
 from django.db import models
+from django.conf import settings
+from django.core.validators import RegexValidator
 
-from django.db import models
 
-
+# Student Model
 class Student(models.Model):
 
     GENDER_CHOICES = [
@@ -19,8 +20,8 @@ class Student(models.Model):
         ('Christian', 'Christian'),
         ('Other', 'Other'),
     ]
-
-    # Basic Information
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    
     name = models.CharField(max_length=100)
     roll = models.PositiveIntegerField(unique=True)
     registration_no = models.CharField(max_length=30, unique=True)
@@ -31,7 +32,13 @@ class Student(models.Model):
 
     # Contact Information
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15)
+    
+    phone = models.CharField(max_length=11,
+                             validators=[RegexValidator(regex=r'^01[3-9]\d{8}$',
+                             message='Enter a valid Bangladeshi phone number.'
+                              )
+                              ]
+                              )
 
     # Personal Information
     dob = models.DateField()

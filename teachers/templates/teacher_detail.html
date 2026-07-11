@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-primary text-white">
+
+        <h3>Teacher Details</h3>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-3">
+
+                {% if teacher.photo %}
+
+                    <img
+                        src="{{ teacher.photo.url }}"
+                        class="img-fluid rounded">
+
+                {% else %}
+
+                    <img
+                        src="https://via.placeholder.com/200"
+                        class="img-fluid rounded">
+
+                {% endif %}
+
+            </div>
+
+            <div class="col-md-9">
+
+                <table class="table table-bordered">
+
+                    <tr>
+
+                        <th>Name</th>
+
+                        <td>{{ teacher.name }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Designation</th>
+
+                        <td>{{ teacher.designation }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Department</th>
+
+                        <td>{{ teacher.department }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Email</th>
+
+                        <td>{{ teacher.email }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Phone</th>
+
+                        <td>{{ teacher.phone }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Date of Birth</th>
+
+                        <td>{{ teacher.dob }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Joining Date</th>
+
+                        <td>{{ teacher.joining_date }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Religion</th>
+
+                        <td>{{ teacher.religion }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Gender</th>
+
+                        <td>{{ teacher.gender }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Created By</th>
+
+                        <td>{{ teacher.created_by }}</td>
+
+                    </tr>
+
+                </table>
+
+                <a
+                    href="{% url 'teacher_list' %}"
+                    class="btn btn-secondary">
+
+                    Back
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
