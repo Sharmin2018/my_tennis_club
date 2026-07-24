@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-primary text-white">
+
+        <h3>Notice Details</h3>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered">
+
+            <tr>
+
+                <th>Title</th>
+
+                <td>{{ notice.title }}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Description</th>
+
+                <td>{{ notice.description|linebreaks }}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Publish Date</th>
+
+                <td>{{ notice.publish_date }}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Notice File</th>
+
+                <td>
+
+                    {% if notice.notice_file %}
+
+                        <a
+                            href="{{ notice.notice_file.url }}"
+                            target="_blank"
+                            class="btn btn-success btn-sm">
+
+                            Download Notice
+
+                        </a>
+
+                    {% else %}
+
+                        No File Uploaded
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>Created By</th>
+
+                <td>{{ notice.created_by }}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Created At</th>
+
+                <td>{{ notice.created_at }}</td>
+
+            </tr>
+
+            <tr>
+
+                <th>Updated At</th>
+
+                <td>{{ notice.updated_at }}</td>
+
+            </tr>
+
+        </table>
+
+        <a
+            href="{% url 'notice_list' %}"
+            class="btn btn-secondary">
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

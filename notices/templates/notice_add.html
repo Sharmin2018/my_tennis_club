@@ -1,0 +1,74 @@
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>
+
+    {% if form.instance.pk %}
+
+        Edit Notice
+
+    {% else %}
+
+        Add Notice
+
+    {% endif %}
+
+</h2>
+
+<form method="POST" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    <div class="mb-3">
+
+        <label>Notice Title</label>
+
+        {{ form.title }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Description</label>
+
+        {{ form.description }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Publish Date</label>
+
+        {{ form.publish_date }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Notice File</label>
+
+        {{ form.notice_file }}
+
+    </div>
+
+    <button
+        type="submit"
+        class="btn btn-success">
+
+        Save
+
+    </button>
+
+    <a
+        href="{% url 'notice_list' %}"
+        class="btn btn-secondary">
+
+        Cancel
+
+    </a>
+
+</form>
+
+{% endblock %}

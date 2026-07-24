@@ -7,12 +7,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 from .models import Staff
 from .forms import StaffForm
-from core.mixins import UserCreateMixin
+from core.mixins import UserCreateMixin, SuccessMessageMixin,BaseListMixin
 
 
 # ----------------------------------------------------------------------
 
-class StaffListView(LoginRequiredMixin, ListView):
+class StaffListView(LoginRequiredMixin,BaseListMixin, ListView):
 
     model = Staff
 
@@ -20,7 +20,7 @@ class StaffListView(LoginRequiredMixin, ListView):
 
     context_object_name = "staffs"
 
-    paginate_by = 3
+   
 
     def get_queryset(self):
 
@@ -44,7 +44,7 @@ class StaffListView(LoginRequiredMixin, ListView):
 
             )
 
-        return queryset.order_by("-id")
+        return queryset.order_by(*self.ordering)
 
 
 # ----------------------------------------------------------------------
@@ -53,6 +53,7 @@ class StaffCreateView(
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UserCreateMixin,
+    SuccessMessageMixin,
     CreateView
 ):
 
@@ -74,6 +75,7 @@ class StaffCreateView(
 class StaffUpdateView(
     LoginRequiredMixin,
     PermissionRequiredMixin,
+    SuccessMessageMixin,
     UpdateView
 ):
 
@@ -88,26 +90,20 @@ class StaffUpdateView(
     permission_required = "staffs.change_staff"
 
     pk_url_kwarg = "id"
+    success_message = "Staff updated successfully."
 
     def get_queryset(self):
 
         return Staff.objects.all()
 
-    def form_valid(self, form):
-
-        messages.success(
-            self.request,
-            "Staff updated successfully."
-        )
-
-        return super().form_valid(form)
-
+    
 
 # ----------------------------------------------------------------------
 
 class StaffDeleteView(
     LoginRequiredMixin,
     PermissionRequiredMixin,
+    SuccessMessageMixin,
     DeleteView
 ):
 
@@ -120,20 +116,13 @@ class StaffDeleteView(
     permission_required = "staffs.delete_staff"
 
     pk_url_kwarg = "id"
+    success_message = "Staff deleted successfully."
 
     def get_queryset(self):
 
         return Staff.objects.all()
 
-    def form_valid(self, form):
-
-        messages.success(
-            self.request,
-            "Staff deleted successfully."
-        )
-
-        return super().form_valid(form)
-
+   
 
 # ----------------------------------------------------------------------
 

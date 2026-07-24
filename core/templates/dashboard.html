@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<h2>Dashboard</h2>
+
+<div class="row mb-4">
+
+    <!-- Total Students -->
+
+    <div class="col-md-3">
+
+        <a href="{% url 'student_list' %}" class="text-decoration-none text-dark">
+
+            <div class="card text-center shadow dashboard-card">
+
+                <div class="card-body">
+
+                    <h5>Total Students</h5>
+
+                    <h2>{{ student_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    <!-- Male Students -->
+
+    <div class="col-md-3">
+
+        <a href="{% url 'student_list' %}?gender=Male" class="text-decoration-none text-dark">
+
+            <div class="card text-center shadow dashboard-card">
+
+                <div class="card-body">
+
+                    <h5>Male Students</h5>
+
+                    <h2>{{ male_students }}</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    
+    <!-- Female Students -->
+
+    <div class="col-md-3">
+
+        <a href="{% url 'student_list' %}?gender=Male" class="text-decoration-none text-dark">
+
+            <div class="card text-center shadow dashboard-card">
+
+                <div class="card-body">
+
+                    <h5>Female Students</h5>
+
+                    <h2>{{ female_students }}</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<div class="row mb-4">
+
+    <!-- Total Teachers -->
+
+    <div class="col-md-3">
+
+        <a href="{% url 'teacher_list' %}" class="text-decoration-none text-dark">
+
+            <div class="card text-center shadow dashboard-card">
+
+                <div class="card-body">
+
+                    <h5>Total Teachers</h5>
+
+                    <h2>{{ teacher_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    <!-- Male Teachers -->
+
+    <div class="col-md-3">
+
+        <a href="{% url 'teacher_list' %}?gender=Male" class="text-decoration-none text-dark">
+
+            <div class="card text-center shadow dashboard-card">
+
+                <div class="card-body">
+
+                    <h5>Male Teachers</h5>
+
+                    <h2>{{ male_teachers }}</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    
+    <!-- Female Teachers -->
+
+    <div class="col-md-3">
+
+        <a href="{% url 'teacher_list' %}?gender=Male" class="text-decoration-none text-dark">
+
+            <div class="card text-center shadow dashboard-card">
+
+                <div class="card-body">
+
+                    <h5>Female Teachers</h5>
+
+                    <h2>{{ female_teachers }}</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+</div>
+
+<div class="row mb-4">
+
+    <!-- Total Staffs -->
+
+    <div class="col-md-3">
+
+        <a href="{% url 'staff_list' %}" class="text-decoration-none text-dark">
+
+            <div class="card text-center shadow dashboard-card">
+
+                <div class="card-body">
+
+                    <h5>Total Staffs</h5>
+
+                    <h2>{{ staff_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    <!-- Male Staffs -->
+
+    <div class="col-md-3">
+
+        <a href="{% url 'staff_list' %}?gender=Male" class="text-decoration-none text-dark">
+
+            <div class="card text-center shadow dashboard-card">
+
+                <div class="card-body">
+
+                    <h5>Male Staffs</h5>
+
+                    <h2>{{ male_staffs }}</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    
+    <!-- Female Staffs -->
+
+    <div class="col-md-3">
+
+        <a href="{% url 'staff_list' %}?gender=Male" class="text-decoration-none text-dark">
+
+            <div class="card text-center shadow dashboard-card">
+
+                <div class="card-body">
+
+                    <h5>Female Staffs</h5>
+
+                    <h2>{{ female_staffs }}</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+</div>
+
+  <!-- admission application-->
+
+    <div class="col-md-3">
+
+        <a href="{% url 'admission_list' %}" class="text-decoration-none text-dark">
+
+            <div class="card text-center shadow dashboard-card">
+
+                <div class="card-body">
+                
+                    <h5>Admission Applications</h5>
+
+                    <h2>{{ admission_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

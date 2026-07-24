@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="card shadow">
+
+<div class="card-header bg-primary text-white">
+
+<h3>
+
+Admission Application Details
+
+</h3>
+
+</div>
+
+<div class="card-body">
+
+<div class="row">
+
+<div class="col-md-3 text-center">
+
+<img src="{{ application.photo.url }}"
+class="img-fluid rounded shadow">
+
+</div>
+
+<div class="col-md-9">
+
+<table class="table table-bordered">
+
+<tr>
+<th width="35%">Application ID</th>
+<td>{{ application.application_id }}</td>
+</tr>
+
+<tr>
+<th>Status</th>
+<td>
+
+{% if application.status == "Pending" %}
+<span class="badge bg-warning">Pending</span>
+
+{% elif application.status == "Verified" %}
+<span class="badge bg-info">Verified</span>
+
+{% elif application.status == "Approved" %}
+<span class="badge bg-success">Approved</span>
+
+{% else %}
+<span class="badge bg-danger">Rejected</span>
+{% endif %}
+
+</td>
+</tr>
+
+<tr>
+<th>Student Name</th>
+<td>{{ application.name }}</td>
+</tr>
+
+<tr>
+<th>Father Name</th>
+<td>{{ application.father_name }}</td>
+</tr>
+
+<tr>
+<th>Mother Name</th>
+<td>{{ application.mother_name }}</td>
+</tr>
+
+<tr>
+<th>Date of Birth</th>
+<td>{{ application.dob }}</td>
+</tr>
+
+<tr>
+<th>Gender</th>
+<td>{{ application.gender }}</td>
+</tr>
+
+<tr>
+<th>Religion</th>
+<td>{{ application.religion }}</td>
+</tr>
+
+<tr>
+<th>Blood Group</th>
+<td>{{ application.blood_group }}</td>
+</tr>
+
+<tr>
+<th>Nationality</th>
+<td>{{ application.nationality }}</td>
+</tr>
+
+<tr>
+<th>Previous School</th>
+<td>{{ application.previous_school }}</td>
+</tr>
+
+<tr>
+<th>Session</th>
+<td>{{ application.admission_session }}</td>
+</tr>
+
+<tr>
+<th>Class</th>
+<td>{{ application.student_class }}</td>
+</tr>
+
+<tr>
+<th>Section</th>
+<td>{{ application.section }}</td>
+</tr>
+
+<tr>
+<th>Department</th>
+<td>{{ application.department }}</td>
+</tr>
+
+<tr>
+<th>Phone</th>
+<td>{{ application.phone }}</td>
+</tr>
+
+<tr>
+<th>Email</th>
+<td>{{ application.email }}</td>
+</tr>
+
+<tr>
+<th>Present Address</th>
+<td>{{ application.present_address }}</td>
+</tr>
+
+<tr>
+<th>Permanent Address</th>
+<td>{{ application.permanent_address }}</td>
+</tr>
+
+<tr>
+<th>Guardian Name</th>
+<td>{{ application.guardian_name }}</td>
+</tr>
+
+<tr>
+<th>Guardian Phone</th>
+<td>{{ application.guardian_phone }}</td>
+</tr>
+
+<tr>
+<th>Guardian Occupation</th>
+<td>{{ application.guardian_occupation }}</td>
+</tr>
+
+<tr>
+<th>Birth Certificate</th>
+<td>
+
+{% if application.birth_certificate %}
+
+<a href="{{ application.birth_certificate.url }}"
+class="btn btn-sm btn-success"
+target="_blank">
+
+Download
+
+</a>
+
+
+{% endif %}
+
+</td>
+</tr>
+
+
+
+</table>
+
+</div>
+
+</div>
+
+<hr>
+
+<div class="card-footer d-flex justify-content-between">
+
+    <a href="{% url 'admission_list' %}"
+       class="btn btn-secondary">
+        Back
+    </a>
+
+    <div>
+
+        {% if application.status != "Approved" %}
+
+        <a href="{% url 'admission_approve' application.pk %}"
+           class="btn btn-success"
+           onclick="return confirm('Approve this application?')">
+            Approve
+        </a>
+
+        {% endif %}
+
+        {% if application.status != "Rejected" %}
+
+        <a href="{% url 'admission_reject' application.pk %}"
+           class="btn btn-danger"
+           onclick="return confirm('Reject this application?')">
+            Reject
+        </a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

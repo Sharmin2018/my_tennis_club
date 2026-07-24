@@ -1,5 +1,5 @@
 from django.db.models import Q
-from core.mixins import UserCreateMixin
+from core.mixins import UserCreateMixin, SuccessMessageMixin,BaseListMixin
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -18,7 +18,7 @@ from .models import Department
 from .forms import DepartmentForm
 
 
-class DepartmentListView(LoginRequiredMixin, ListView):
+class DepartmentListView(LoginRequiredMixin,BaseListMixin, ListView):
 
     model = Department
 
@@ -26,7 +26,6 @@ class DepartmentListView(LoginRequiredMixin, ListView):
 
     context_object_name = "departments"
 
-    paginate_by = 5
 
     def get_queryset(self):
 
@@ -44,7 +43,7 @@ class DepartmentListView(LoginRequiredMixin, ListView):
 
             )
 
-        return queryset.order_by("name")
+        return queryset.order_by(*self.ordering)
 
 
 # ------------------------------------------------------------
@@ -53,6 +52,7 @@ class DepartmentCreateView(
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UserCreateMixin,
+    SuccessMessageMixin,
     CreateView
 ):
 
@@ -73,6 +73,7 @@ class DepartmentCreateView(
 class DepartmentUpdateView(
     LoginRequiredMixin,
     PermissionRequiredMixin,
+    SuccessMessageMixin,
     UpdateView
 ):
 
@@ -87,22 +88,16 @@ class DepartmentUpdateView(
     permission_required = "departments.change_department"
 
     pk_url_kwarg = "id"
+    success_message = "Department updated successfully."
 
-    def form_valid(self, form):
-
-        messages.success(
-            self.request,
-            "Department updated successfully."
-        )
-
-        return super().form_valid(form)
-
+    
 
 # ------------------------------------------------------------
 
 class DepartmentDeleteView(
     LoginRequiredMixin,
     PermissionRequiredMixin,
+    SuccessMessageMixin,
     DeleteView
 ):
 
@@ -116,15 +111,9 @@ class DepartmentDeleteView(
 
     pk_url_kwarg = "id"
 
-    def form_valid(self, form):
+    success_message = "Department delated successfully."
 
-        messages.success(
-            self.request,
-            "Department deleted successfully."
-        )
-
-        return super().form_valid(form)
-
+    
 
 # ------------------------------------------------------------
 

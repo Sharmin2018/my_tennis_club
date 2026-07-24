@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Promotion History</h3>
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>Student</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Section</th>
+            <th>Promoted By</th>
+            <th>Date</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    {% for item in histories %}
+
+        <tr>
+
+            <td>{{ item.student }}</td>
+
+            <td>{{ item.from_class }}</td>
+
+            <td>{{ item.to_class }}</td>
+
+            <td>{{ item.section }}</td>
+
+            <td>{{ item.promoted_by }}</td>
+
+            <td>{{ item.promoted_at }}</td>
+
+        </tr>
+
+    {% empty %}
+
+        <tr>
+
+            <td colspan="6" class="text-center">
+                No Promotion History
+            </td>
+
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

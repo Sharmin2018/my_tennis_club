@@ -7,7 +7,7 @@
     <div class="card shadow">
 
         <div class="card-header bg-primary text-white">
-            <h3>Student Details</h3>
+            <h3>Student Profile</h3>
         </div>
 
         <div class="card-body">
@@ -46,6 +46,16 @@
                 </tr>
 
                 <tr>
+                    <th>Section</th>
+                    <td>{{ student.section }}</td>
+                </tr>
+
+                <tr>
+                    <th>Department</th>
+                    <td>{{ student.department }}</td>
+                </tr>
+
+                <tr>
                     <th>Email</th>
                     <td>{{ student.email }}</td>
                 </tr>
@@ -77,8 +87,14 @@
 
             </table>
 
-            <a href="{% url 'list' %}" class="btn btn-secondary">
+            <a href="{% url 'student_list' %}" class="btn btn-secondary">
                 Back
+            </a>
+
+            <a href="{% url 'student_print' student.id %}" target="_blank" class="btn btn-primary">
+
+            Print Profile
+
             </a>
 
         </div>

@@ -6,10 +6,10 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView,DetailView, UpdateView,DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .forms import TeacherForm
-from core.mixins import UserCreateMixin
+from core.mixins import UserCreateMixin,SuccessMessageMixin,BaseListMixin
 
 
-class TeacherListView(LoginRequiredMixin,ListView):
+class TeacherListView(LoginRequiredMixin,BaseListMixin,ListView):
 
     model = Teacher
 
@@ -17,7 +17,7 @@ class TeacherListView(LoginRequiredMixin,ListView):
 
     context_object_name = "teachers"
 
-    paginate_by = 3
+   
 
     def get_queryset(self):
 
@@ -39,11 +39,16 @@ class TeacherListView(LoginRequiredMixin,ListView):
 
         )
 
-        return queryset.order_by("-id")
+        return queryset.order_by(*self.ordering)
 
 #----------------------------------------------------------------------------------
 
-class TeacherCreateView( LoginRequiredMixin,PermissionRequiredMixin, UserCreateMixin,CreateView):
+class TeacherCreateView( 
+    LoginRequiredMixin,
+    PermissionRequiredMixin, 
+    UserCreateMixin,
+    SuccessMessageMixin,
+    CreateView):
 
     model = Teacher
 
@@ -60,7 +65,7 @@ class TeacherCreateView( LoginRequiredMixin,PermissionRequiredMixin, UserCreateM
     
 #--------------------------------------------------------------------------------------
 
-class TeacherUpdateView(LoginRequiredMixin, PermissionRequiredMixin,UpdateView):
+class TeacherUpdateView(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
 
     model = Teacher
 
@@ -73,24 +78,19 @@ class TeacherUpdateView(LoginRequiredMixin, PermissionRequiredMixin,UpdateView):
     permission_required = "teachers.change_teacher"
 
     pk_url_kwarg = "id"
+    success_message = "Teacher updated successfully."
 
     def get_queryset(self):
         return Teacher.objects.all()
     
 
-    def form_valid(self, form):
-
-        messages.success(
-            self.request,
-            "Teacher updated successfully."
-        )
-
-        return super().form_valid(form)
+  
     
 #-----------------------------------------------------------------------  
 class TeacherDeleteView(
     LoginRequiredMixin,
     PermissionRequiredMixin,
+    SuccessMessageMixin,
     DeleteView
 ):
 
@@ -104,17 +104,12 @@ class TeacherDeleteView(
 
     pk_url_kwarg = "id"
 
+    success_message = "Teacher Delated successfully."
+
     def get_queryset(self):
         return Teacher.objects.all()
 
-    def form_valid(self, form):
-
-        messages.success(
-            self.request,
-            "Teacher deleted successfully."
-        )
-
-        return super().form_valid(form)
+    
     
 #---------------------------------------------------------------
 

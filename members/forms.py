@@ -7,18 +7,42 @@ class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = [
-            'name',
-            'roll',
-            'registration_no',
-            'session',
-            'student_class',
-            'email',
-            'phone',
-            'dob',
-            'religion',
-            'gender',
-            'photo',
-            ]
+            # Academic
+             "roll",
+             "registration_no",
+             "session",
+            "student_class",
+            "section",
+            "department",
+
+            # Student
+            "name",
+            "father_name",
+            "mother_name",
+            "dob",
+            "gender",
+            "religion",
+            "blood_group",
+            "nationality",
+            "previous_school",
+
+            # Contact
+            "email",
+            "phone",
+            "present_address",
+            "permanent_address",
+
+            # Guardian
+            "guardian_name",
+            "guardian_phone",
+            "guardian_occupation",
+
+            # Photo
+            "photo",
+        ]
+
+
+        
 
         widgets = {
             'name': forms.TextInput(attrs={
@@ -36,14 +60,21 @@ class StudentForm(forms.ModelForm):
                 'placeholder': 'Enter registration number'
             }),
 
-            'session': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter session'
+            "session": forms.Select(attrs={
+                "class": "form-select",
             }),
 
-            'student_class': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter class'
+        
+            "student_class": forms.Select(attrs={
+             "class": "form-select",
+            }),
+
+            "section": forms.Select( attrs={
+             "class": "form-select",
+             }),
+
+            "department": forms.Select(attrs={
+                "class": "form-select"
             }),
 
             'email': forms.EmailInput(attrs={
@@ -69,7 +100,31 @@ class StudentForm(forms.ModelForm):
                 'class': 'form-select'
             }),
 
+            "father_name": forms.TextInput(attrs={"class":"form-control"}),
+            "mother_name": forms.TextInput(attrs={"class":"form-control"}),
+            "nationality": forms.TextInput(attrs={"class":"form-control"}),
+            "previous_school": forms.TextInput(attrs={"class":"form-control"}),
+
+            "blood_group": forms.Select(attrs={"class":"form-select"}),
+
+            "present_address": forms.Textarea(attrs={
+                "rows":3,
+                 "class":"form-control",
+                }),
+
+            "permanent_address": forms.Textarea(attrs={
+                "rows":3,
+                "class":"form-control",
+                }),
+
+            "guardian_name": forms.TextInput(attrs={"class":"form-control"}),
+            "guardian_phone": forms.TextInput(attrs={"class":"form-control"}),
+            "guardian_occupation": forms.TextInput(attrs={"class":"form-control"}),
+
+
             'photo': forms.ClearableFileInput(attrs={
                 'class': 'form-control'
             }),
         }
+
+

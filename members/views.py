@@ -1,64 +1,119 @@
-from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
+
+from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
+
 from django.db.models import Q
-from django.shortcuts import render, redirect
+
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View,DetailView,TemplateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from .forms import StudentForm
 from .models import Student
-from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib import messages
-from django.contrib.auth.mixins import PermissionRequiredMixin
-from core.mixins import UserCreateMixin
 
+from core.mixins import UserCreateMixin,SuccessMessageMixin,BaseListMixin
+from departments.models import Department
+from academics.models import (
+    StudentClass,
+    Section,
+)
 
 
 
 # -------------------------
 # Student List
 # -------------------------
-class StudentListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class StudentListView(LoginRequiredMixin, PermissionRequiredMixin,BaseListMixin, ListView):
     model = Student
-    template_name = 'list.html'
+    template_name = 'student_list.html'
     context_object_name = 'students'
     login_url = '/login/'
-
-    paginate_by = 3
-    ordering = ['-id']
+    
     permission_required = "members.view_student"
-
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-
-        if query:
-            return Student.objects.filter(
-                Q(name__icontains=query) |
-                Q(email__icontains=query) |
-                Q(roll__icontains=query) |
-                Q(registration_no__icontains=query)
-            ).order_by('-id')
-
-        return Student.objects.all().order_by('-id')
     
 
+    def get_queryset(self):
+
+        query = self.request.GET.get("q")
+
+        student_class = self.request.GET.get("class")
+
+        section = self.request.GET.get("section")
+
+        gender = self.request.GET.get("gender")
+
+        queryset = Student.objects.all()
+        department = self.request.GET.get("department")
+
+        if query:
+
+            queryset = queryset.filter(
+
+            Q(name__icontains=query) |
+            Q(email__icontains=query) |
+            Q(roll__icontains=query) |
+            Q(registration_no__icontains=query)
+
+        )
+            
+
+        if department:
+
+            queryset = queryset.filter(
+            department_id=department
+        )
+        if gender:
+
+            queryset = queryset.filter(
+            gender=gender
+        )
+
+        if student_class:
+
+            queryset = queryset.filter(
+            student_class=student_class
+        )
+
+        if section:
+
+            queryset = queryset.filter(
+            section=section
+        )
+
+        return queryset.order_by(*self.ordering)
+    
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        context["classes"] = StudentClass.objects.all()
+
+        context["sections"] = Section.objects.all()
+
+        context["departments"] = Department.objects.all()
+
+        return context
+    
+    
 
 # -------------------------
 # Add Student
 # -------------------------
-class StudentCreateView(LoginRequiredMixin,PermissionRequiredMixin,UserCreateMixin,CreateView):
+class StudentCreateView(LoginRequiredMixin,
+                        PermissionRequiredMixin,
+                        UserCreateMixin,
+                        SuccessMessageMixin,
+                        CreateView):
+    
     model = Student
 
     form_class = StudentForm
 
     template_name = "student_form.html"
 
-    success_url = reverse_lazy("list")
+    success_url = reverse_lazy("student_list")
 
     permission_required = "members.add_student"
 
     success_message = "Student added successfully."
-    login_url = '/login/'
+    login_url = 'login'
     permission_required = "members.add_student"
 
    
@@ -70,7 +125,7 @@ class StudentUpdateView(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessa
     model = Student
     form_class = StudentForm
     template_name = "student_form.html"
-    success_url = reverse_lazy("list")
+    success_url = reverse_lazy("student_list")
     success_message = "Student updated successfully."
     pk_url_kwarg = "id"
     permission_required = "members.change_student"
@@ -87,44 +142,17 @@ class StudentUpdateView(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessa
 # -------------------------
 # Delete Student
 # -------------------------
-class StudentDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class StudentDeleteView(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, DeleteView):
      model = Student
      template_name = "delete.html"
-     success_url = reverse_lazy("list")
+     success_url = reverse_lazy("student_list")
      login_url = "/login/"
      pk_url_kwarg = "id"
      permission_required = "members.delete_student"
+     success_message = "Student deleted successfully."
 
-     def form_valid(self, form):
-        messages.success(
-            self.request,
-            "Student deleted successfully."
-        )
-        return super().form_valid(form)
+     
 
-# -------------------------
-# Register
-# -------------------------
-class RegisterView(View):
-
-    def get(self, request):
-        return render(request, 'register.html')
-
-    def post(self, request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists!")
-            return redirect('register')
-
-        User.objects.create_user(
-            username=username,
-            password=password
-        )
-
-        messages.success(request, "Account created successfully!")
-        return redirect('login')
     
 # -------------------------
 # Detail View
@@ -137,28 +165,11 @@ class StudentDetailView(LoginRequiredMixin, DetailView):
         pk_url_kwarg = "id"
 
 # -------------------------
-# Dashboard View
+# Detail print
 # -------------------------
 
-class DashboardView(LoginRequiredMixin, TemplateView):
+class StudentPrintView(DetailView):
+    model = Student
+    template_name = "student_print.html"
+    context_object_name = "student"
 
-    template_name = "dashboard.html"
-    def get_context_data(self, **kwargs):
-
-        context = super().get_context_data(**kwargs)
-
-        context["student_count"] = Student.objects.count()
-
-        context["male_students"] = Student.objects.filter(
-        gender="Male"
-        ).count()
-
-        context["female_students"] = Student.objects.filter(
-        gender="Female"
-         ).count()
-
-        context["photo_students"] = Student.objects.exclude(
-        photo=""
-        ).count()
-
-        return context

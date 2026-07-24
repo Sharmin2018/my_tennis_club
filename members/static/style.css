@@ -12,3 +12,13 @@ p {
     color: green;
     font-size: 18px;
 }
+
+.dashboard-card{
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.dashboard-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+}

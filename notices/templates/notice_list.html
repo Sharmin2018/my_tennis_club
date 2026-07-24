@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2>Notice List</h2>
+
+</div>
+
+{% include "search_form.html" with placeholder="Search notice" %}
+
+<table class="table table-bordered table-hover align-middle">
+
+    <thead class="table-dark">
+
+        <tr>
+
+            <th>ID</th>
+
+            <th>Title</th>
+
+            <th>Publish Date</th>
+
+            <th>File</th>
+
+            <th>Action</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    {% for notice in notices %}
+
+        <tr>
+
+            <td>{{ notice.id }}</td>
+
+            <td>
+
+                <a href="{% url 'notice_detail' notice.id %}">
+
+                    {{ notice.title }}
+
+                </a>
+
+            </td>
+
+            <td>{{ notice.publish_date }}</td>
+
+            <td>
+
+                {% if notice.notice_file %}
+
+                    <a
+                        href="{{ notice.notice_file.url }}"
+                        target="_blank"
+                        class="btn btn-info btn-sm">
+
+                        Download
+
+                    </a>
+
+                {% else %}
+
+                    No File
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                {% if perms.notices.change_notice %}
+
+                <a
+                    href="{% url 'notice_edit' notice.id %}"
+                    class="btn btn-warning btn-sm">
+
+                    Edit
+
+                </a>
+
+                {% endif %}
+
+                {% if perms.notices.delete_notice %}
+
+                <a
+                    href="{% url 'notice_delete' notice.id %}"
+                    class="btn btn-danger btn-sm">
+
+                    Delete
+
+                </a>
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+    {% empty %}
+
+        <tr>
+
+            <td colspan="5"
+                class="text-center text-danger">
+
+                No Notice Found.
+
+            </td>
+
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% if is_paginated %}
+
+    {% include "pagination.html" %}
+
+{% endif %}
+
+{% endblock %}

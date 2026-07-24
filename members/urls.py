@@ -1,45 +1,28 @@
 from django.urls import path
 from . import views
 
-from django.contrib.auth import views as auth_views
-from .views import (
-    StudentListView,
-    StudentCreateView,
-    StudentUpdateView,
-    StudentDeleteView,
-    RegisterView,
-    StudentDetailView,
-)
+
 
 urlpatterns = [
-    path('', StudentListView.as_view(), name='list'),
+   
 
-    path('add/', StudentCreateView.as_view(), name='add'),
+    path("", views.StudentListView.as_view(), name="student_list"),
 
-    path('edit/<int:id>/', StudentUpdateView.as_view(), name='edit'),
+    path("add/", views.StudentCreateView.as_view(), name="student_add"),
 
-    path('delete/<int:id>/', StudentDeleteView.as_view(), name='delete'),
+    path("edit/<int:id>/", views.StudentUpdateView.as_view(), name="student_edit"),
 
-    path('register/', RegisterView.as_view(), name='register'),
+    path("delete/<int:id>/", views.StudentDeleteView.as_view(), name="student_delete"),
     
-    path("student/<int:id>/",StudentDetailView.as_view(),name="student_detail",),
-
-    path("dashboard/",views.DashboardView.as_view(),name="dashboard",),
+    path("detail/<int:id>/", views.StudentDetailView.as_view(), name="student_detail"),
 
     path(
-        'login/',
-        auth_views.LoginView.as_view(
-            template_name='login.html',
-            redirect_authenticated_user=True,
-        ),
-        name='login',
+    "profile/<int:pk>/print/",
+    views.StudentPrintView.as_view(),
+    name="student_print",
     ),
 
-    path(
-        'logout/',
-        auth_views.LogoutView.as_view(
-            next_page='login'
-        ),
-        name='logout',
-    ),
+
+
+
 ]
