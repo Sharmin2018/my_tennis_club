@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,41 +8,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Student Management System</title>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css"
-          rel="stylesheet">
-
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css"
+        rel="stylesheet">
 
     <style>
 
-.accordion-button:not(.collapsed){
-    background:#0d6efd;
-    color:white;
-}
+        body{
+            background:#f8f9fa;
+        }
 
-.accordion-button:focus{
-    box-shadow:none;
-}
+        .accordion-button:not(.collapsed){
+            background:#0d6efd;
+            color:#fff;
+        }
 
-.list-group-item:hover{
-    background:#0d6efd !important;
-    color:white !important;
-    transition:.3s;
-}
+        .accordion-button:focus{
+            box-shadow:none;
+        }
 
-</style>
+        .list-group-item:hover{
+            background:#0d6efd !important;
+            color:#fff !important;
+            transition:.3s;
+        }
 
+    </style>
+
+    {% block extra_css %}
+    {% endblock %}
 
 </head>
 
 <body>
 
-<!-- Top Navbar -->
+<!-- ================= NAVBAR ================= -->
 
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
     <div class="container-fluid">
 
@@ -56,29 +67,34 @@
 
         <div class="d-flex align-items-center">
 
-            <span class="text-white me-3">
+            {% if request.user.is_authenticated %}
 
-                Welcome,
+                <span class="text-white me-3">
 
-                <strong>{{ request.user.username }}</strong>
+                    Welcome,
+                    <strong>{{ request.user.username }}</strong>
 
-            </span>
+                </span>
 
-            <form action="{% url 'logout' %}" method="POST">
+                <form
+                    action="{% url 'logout' %}"
+                    method="POST">
 
-                {% csrf_token %}
+                    {% csrf_token %}
 
-                <button
-                    type="submit"
-                    class="btn btn-danger btn-sm">
+                    <button
+                        type="submit"
+                        class="btn btn-danger btn-sm">
 
-                    <i class="bi bi-box-arrow-right"></i>
+                        <i class="bi bi-box-arrow-right"></i>
 
-                    Logout
+                        Logout
 
-                </button>
+                    </button>
 
-            </form>
+                </form>
+
+            {% endif %}
 
         </div>
 
@@ -86,6 +102,7 @@
 
 </nav>
 
+<!-- ================= CONTENT ================= -->
 
 <div class="container-fluid">
 
@@ -93,49 +110,72 @@
 
         <!-- Sidebar -->
 
-        {% include 'sidebar.html' %}
+        {% include "sidebar.html" %}
 
         <!-- Main Content -->
 
-        <div class="col-md-9 col-lg-10 mt-3">
-
-            {% if messages %}
-
-                {% for message in messages %}
-
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-
-                        {{ message }}
-
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="alert">
-                        </button>
-
-                    </div>
-
-                {% endfor %}
-
-            {% endif %}
+        <main class="col-md-9 col-lg-10 py-3">
 
             {% block content %}
-            
             {% endblock %}
 
-           
-
-        </div>
+        </main>
 
     </div>
 
 </div>
 
-  
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Bootstrap -->
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Chart JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<!-- Django Messages -->
+
+{% if messages %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    {% for message in messages %}
+
+    Swal.fire({
+
+        icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+
+        title: "{{ message|escapejs }}",
+
+        toast: true,
+
+        position: "top-end",
+
+        showConfirmButton: false,
+
+        timer: 2500,
+
+        timerProgressBar: true
+
+    });
+
+    {% endfor %}
+
+});
+
+</script>
+
+{% endif %}
+
 {% block extra_js %}
 {% endblock %}
+
 </body>
+
 </html>

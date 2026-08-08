@@ -21,13 +21,14 @@ urlpatterns = [
     path("departments/", include("departments.urls")),
     path("notices/", include("notices.urls")),
     path("promotion/",include("promotion.urls"),),
+    path("attendance/",include("attendance.urls"),),
+    path("subjects/",include("subjects.urls"),),
+    path("routine/",include("routine.urls"),),
     
     # Public Website
     path("", include("website.urls")),
 
 ]
-
-
 
 if settings.DEBUG:
     urlpatterns += static(

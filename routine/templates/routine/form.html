@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4 class="mb-0">
+
+                {% if object %}
+                    Edit Routine
+                {% else %}
+                    Add Routine
+                {% endif %}
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label">
+
+                            Subject Assignment
+
+                        </label>
+
+                        {{ form.subject_assignment }}
+
+                        {{ form.subject_assignment.errors }}
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+
+                            Day
+
+                        </label>
+
+                        {{ form.day }}
+
+                        {{ form.day.errors }}
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+
+                            Start Time
+
+                        </label>
+
+                        {{ form.start_time }}
+
+                        {{ form.start_time.errors }}
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+
+                            End Time
+
+                        </label>
+
+                        {{ form.end_time }}
+
+                        {{ form.end_time.errors }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Room No
+
+                        </label>
+
+                        {{ form.room }}
+
+                        {{ form.room.errors }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <div class="form-check mt-4">
+
+                            {{ form.is_active }}
+
+                            <label class="form-check-label">
+
+                                Active Routine
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <button
+                    type="submit"
+                    class="btn btn-success">
+
+                    <i class="bi bi-check-circle"></i>
+
+                    Save
+
+                </button>
+
+                <a
+                    href="{% url 'routine_list' %}"
+                    class="btn btn-secondary">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    Back
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

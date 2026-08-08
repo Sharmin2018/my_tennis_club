@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-info text-white">
+
+            <h4 class="mb-0">
+                Subject Details
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered">
+
+                <tr>
+                    <th width="220">Subject Code</th>
+                    <td>{{ object.code }}</td>
+                </tr>
+
+                <tr>
+                    <th>Subject Name</th>
+                    <td>{{ object.name }}</td>
+                </tr>
+
+                <tr>
+                    <th>Department</th>
+                    <td>{{ object.department }}</td>
+                </tr>
+
+                <tr>
+                    <th>Class</th>
+                    <td>{{ object.student_class }}</td>
+                </tr>
+
+                <tr>
+                    <th>Credit</th>
+                    <td>{{ object.credit }}</td>
+                </tr>
+
+                <tr>
+                    <th>Status</th>
+                    <td>
+                        {% if object.is_active %}
+                            <span class="badge bg-success">
+                                Active
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger">
+                                Inactive
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+            </table>
+
+            <a href="{% url 'subject_list' %}"
+               class="btn btn-secondary">
+
+                Back
+
+            </a>
+
+            <a href="{% url 'subject_edit' object.pk %}"
+               class="btn btn-warning">
+
+                Edit
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

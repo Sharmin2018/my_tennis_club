@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4 class="mb-0">
+
+                {% if object %}
+
+                    Edit Subject
+
+                {% else %}
+
+                    Add Subject
+
+                {% endif %}
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Subject Name</label>
+
+                        {{ form.name }}
+
+                        {{ form.name.errors }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Subject Code</label>
+
+                        {{ form.code }}
+
+                        {{ form.code.errors }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Department</label>
+
+                        {{ form.department }}
+
+                        {{ form.department.errors }}
+
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Class</label>
+
+                        {{ form.student_class }}
+
+                        {{ form.student_class.errors }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Full Marks</label>
+
+                        {{ form.full_marks }}
+
+                        {{ form.full_marks.errors }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Pass Marks</label>
+
+                        {{ form.pass_marks }}
+
+                        {{ form.pass_marks.errors }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Credit</label>
+
+                        {{ form.credit }}
+
+                        {{ form.credit.errors }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <div class="form-check mt-4">
+
+                            {{ form.is_optional }}
+
+                            <label class="form-check-label">
+
+                                Optional Subject
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-success">
+
+                    Save
+
+                </button>
+
+                <a
+                    href="{% url 'subject_list' %}"
+                    class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

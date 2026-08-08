@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from admission.models import AdmissionApplication
 from members.models import Student
 from teachers.models import Teacher
 from staffs.models import Staff
@@ -17,6 +17,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
+
+        context["application"] = AdmissionApplication.objects.count()
 
         context["student_count"] = Student.objects.count()
 

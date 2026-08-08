@@ -60,7 +60,7 @@ class TeacherCreateView(
 
     permission_required = "teachers.add_teacher"
 
-    success_message = "Student added successfully."
+    success_message = "Teacher added successfully."
 
     
 #--------------------------------------------------------------------------------------

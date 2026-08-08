@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script>
+
+function printReport(){
+
+    var printContents =
+        document.getElementById("print-area").innerHTML;
+
+    var originalContents =
+        document.body.innerHTML;
+
+    document.body.innerHTML = printContents;
+
+    window.print();
+
+    document.body.innerHTML = originalContents; 
+
+}
+
+</script>
+
+<div class="container mt-4">
+
+    <!-- Report Form -->
+    
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <div class="col-md-2 mb-3">
+                        <label>Year</label>
+                        {{ form.year }}
+                    </div>
+
+                    <div class="col-md-2 mb-3">
+                        <label>Month</label>
+                        {{ form.month }}
+                    </div>
+
+                    <div class="col-md-2 mb-3">
+                        <label>Session</label>
+                        {{ form.session }}
+                    </div>
+
+                    <div class="col-md-2 mb-3">
+                        <label>Class</label>
+                        {{ form.student_class }}
+                    </div>
+
+                    <div class="col-md-2 mb-3">
+                        <label>Section</label>
+                        {{ form.section }}
+                    </div>
+
+                    <div class="col-md-2 mb-3">
+                        <label>Department</label>
+                        {{ form.department }}
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+
+                    Generate Report
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    {% if report %}
+    <div class="mt-4 text-center">
+
+                <button
+                    type="button"
+                    class="btn btn-success"
+                    onclick="printReport()">
+
+                        Print Report
+
+                </button>
+            </div>
+<br>
+
+    <!-- Report -->
+    <div id="print-area">
+    <div class="card shadow">
+
+       <div class="card shadow mb-4">
+
+        <div class="text-center mb-4">
+
+    <img src="/static/images/logo.png"
+         width="70">
+
+    <h2 class="mt-2">
+
+        ABC High School
+
+    </h2>
+
+    <h5>
+
+        Monthly Attendance Report
+
+    </h5>
+
+</div>
+        
+            <div class="row mb-3">
+
+                <div class="col-md-6">
+
+                    <strong>Session :</strong> {{ session }}<br>
+
+                    <strong>Class :</strong> {{ student_class }}<br>
+
+                    <strong>Section :</strong> {{ section }}
+
+                </div>
+
+                <div class="col-md-6 text-end">
+
+                    <strong>Department :</strong> {{ department }}<br>
+
+                    <strong>Month :</strong> {{ month_name }} {{ year }}<br>
+
+                    <strong>Working Days :</strong> {{ working_days }}
+
+                </div>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-striped">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>SL</th>
+                            <th>Roll</th>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Present</th>
+                            <th>Absent</th>
+                            <th>Late</th>
+                            <th>Leave</th>
+                            <th>Total</th>
+                            <th>Attendance %</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for row in report %}
+
+                    <tr>
+
+                        <td>{{ forloop.counter }}</td>
+
+                        <td>{{ row.student.roll }}</td>
+
+                        <td>{{ row.student.student_id }}</td>
+
+                        <td>{{ row.student.name }}</td>
+
+                        <td class="text-success fw-bold">
+
+                            {{ row.present }}
+
+                        </td>
+
+                        <td class="text-danger fw-bold">
+
+                            {{ row.absent }}
+
+                        </td>
+
+                        <td class="text-warning fw-bold">
+
+                            {{ row.late }}
+
+                        </td>
+
+                        <td class="text-info fw-bold">
+
+                            {{ row.leave }}
+
+                        </td>
+
+                        <td>
+
+                            {{ row.total }}
+
+                        </td>
+
+                        <td>
+
+                            {% if row.attendance_percent >= 90 %}
+
+                                <span class="badge bg-success">
+
+                                    {{ row.attendance_percent }}%
+
+                                </span>
+
+                            {% elif row.attendance_percent >= 75 %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    {{ row.attendance_percent }}%
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    {{ row.attendance_percent }}%
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                <div class="row mt-5">
+
+    <div class="col-6 text-center">
+
+        ----------------------<br>
+          Class Teacher
+
+    </div>
+
+    
+
+    <div class="col-6 text-center">
+
+        ----------------------<br>
+           Principal
+
+    </div>
+
+</div>
+
+            </div>
+
+          
+
+        </div>
+
+    </div>
+    </div>
+    <div class="print-footer">
+
+    Page <span class="pageNumber"></span>
+
+    </div>
+
+    {% endif %}
+
+      
+</div>
+
+
+<style>
+
+@page{
+    size:A4 portrait;
+    margin:10mm;
+}
+
+@media print{
+
+    body{
+        width:100%;
+        font-size:11px;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+    }
+
+    th,
+    td{
+        border:1px solid #000;
+        padding:5px;
+    }
+
+    .btn,
+    form,
+    nav,
+    footer,
+    .navbar,
+    .card-header{
+        display:none !important;
+    }
+
+    .card{
+        border:none;
+        box-shadow:none;
+    }
+
+    img{
+        max-width:70px;
+    }
+}
+
+</style>
+
+{% endblock %}

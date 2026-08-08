@@ -53,6 +53,13 @@
 
                 <div class="list-group list-group-flush">
 
+                    <a href="{% url 'admission_list' %}"
+                       class="list-group-item bg-secondary text-white border-0">
+
+                        Admission List
+
+                    </a>
+
                     <a href="{% url 'student_list' %}"
                        class="list-group-item bg-secondary text-white border-0">
 
@@ -71,6 +78,34 @@
                        class="list-group-item bg-secondary text-white border-0">
 
                         Promote Student
+
+                    </a>
+
+                    <a href="{% url 'promotion_history' %}"
+                       class="list-group-item bg-secondary text-white border-0">
+
+                         Promotion History
+
+                    </a>
+
+                    <a href="{% url 'attendance' %}"
+                       class="list-group-item bg-secondary text-white border-0">
+
+                         Student Attendance
+
+                    </a>
+
+                    <a href="{% url 'attendance_history' %}"
+                       class="list-group-item bg-secondary text-white border-0">
+
+                        Attendance History
+
+                    </a>
+
+                    <a href="{% url 'monthly_attendance_report' %}"
+                       class="list-group-item bg-secondary text-white border-0">
+
+                         Monthly Attendance Report
 
                     </a>
 
@@ -212,6 +247,114 @@
                class="list-group-item bg-secondary text-white border-0">
 
                 Add Department
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Subject Management -->
+
+<div class="accordion-item bg-dark border-0">
+
+    <h2 class="accordion-header">
+
+        <button
+            class="accordion-button collapsed bg-dark text-white shadow-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#subjectMenu">
+
+            <i class="bi bi-book-half me-2"></i>
+
+            Subject Management
+
+        </button>
+
+    </h2>
+
+    <div
+        id="subjectMenu"
+        class="accordion-collapse collapse"
+        data-bs-parent="#sidebarAccordion">
+
+        <div class="list-group list-group-flush">
+
+            <a href="{% url 'subject_list' %}"
+               class="list-group-item bg-secondary text-white border-0">
+
+                Subject List
+
+            </a>
+
+            <a href="{% url 'subject_add' %}"
+               class="list-group-item bg-secondary text-white border-0">
+
+                Add Subject
+
+            </a>
+
+            <a href="{% url 'subject_assignment_list' %}"
+                class="list-group-item bg-secondary text-white border-0">
+
+                Subject Assignment
+
+            </a>
+
+        <a href="{% url 'subject_assignment_add' %}"
+            class="list-group-item bg-secondary text-white border-0">
+
+            Assign Subject
+
+        </a>      
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Routine Management -->
+
+<div class="accordion-item bg-dark border-0">
+
+    <h2 class="accordion-header">
+
+        <button
+            class="accordion-button collapsed bg-dark text-white shadow-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#routineMenu">
+
+            <i class="bi bi-calendar-week me-2"></i>
+
+            Routine Management
+
+        </button>
+
+    </h2>
+
+    <div
+        id="routineMenu"
+        class="accordion-collapse collapse"
+        data-bs-parent="#sidebarAccordion">
+
+        <div class="list-group list-group-flush">
+
+            <a href="{% url 'routine_list' %}"
+               class="list-group-item bg-secondary text-white border-0">
+
+                Routine List
+
+            </a>
+
+            <a href="{% url 'routine_add' %}"
+               class="list-group-item bg-secondary text-white border-0">
+
+                Add Routine
 
             </a>
 

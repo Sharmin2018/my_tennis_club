@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4 class="mb-0">
+
+                Routine Details
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered">
+
+                <tr>
+                    <th width="250">Subject Code</th>
+                    <td>{{ routine.subject_assignment.subject.code }}</td>
+                </tr>
+
+                <tr>
+                    <th>Subject</th>
+                    <td>{{ routine.subject_assignment.subject.name }}</td>
+                </tr>
+
+                <tr>
+                    <th>Teacher</th>
+                    <td>{{ routine.subject_assignment.teacher }}</td>
+                </tr>
+
+                <tr>
+                    <th>Department</th>
+                    <td>{{ routine.subject_assignment.department }}</td>
+                </tr>
+
+                <tr>
+                    <th>Session</th>
+                    <td>{{ routine.subject_assignment.session }}</td>
+                </tr>
+
+                <tr>
+                    <th>Class</th>
+                    <td>{{ routine.subject_assignment.student_class }}</td>
+                </tr>
+
+                <tr>
+                    <th>Section</th>
+                    <td>{{ routine.subject_assignment.section }}</td>
+                </tr>
+
+                <tr>
+                    <th>Day</th>
+                    <td>{{ routine.day }}</td>
+                </tr>
+
+                <tr>
+                    <th>Start Time</th>
+                    <td>{{ routine.start_time }}</td>
+                </tr>
+
+                <tr>
+                    <th>End Time</th>
+                    <td>{{ routine.end_time }}</td>
+                </tr>
+
+                <tr>
+                    <th>Room</th>
+                    <td>{{ routine.room }}</td>
+                </tr>
+
+                <tr>
+                    <th>Status</th>
+                    <td>
+                        {% if routine.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+            </table>
+
+            <a href="{% url 'routine_list' %}"
+               class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left"></i>
+                Back
+
+            </a>
+
+            <a href="{% url 'routine_edit' routine.pk %}"
+               class="btn btn-warning">
+
+                <i class="bi bi-pencil"></i>
+                Edit
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

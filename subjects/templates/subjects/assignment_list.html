@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h4 class="mb-0">
+                    Subject Assignment List
+                </h4>
+
+                <a href="{% url 'subject_assignment_add' %}"
+                   class="btn btn-light">
+
+                    <i class="bi bi-plus-circle"></i>
+
+                    Assign Subject
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <!-- Search -->
+
+            <form method="GET" class="row mb-3">
+
+                <div class="col-md-4">
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request.GET.search }}"
+                        class="form-control"
+                        placeholder="Search Subject / Teacher">
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <button
+                        class="btn btn-primary">
+
+                        <i class="bi bi-search"></i>
+
+                        Search
+
+                    </button>
+
+                </div>
+
+            </form>
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>SL</th>
+
+                            <th>Subject</th>
+
+                            <th>Teacher</th>
+
+                            <th>Department</th>
+
+                            <th>Session</th>
+
+                            <th>Class</th>
+
+                            <th>Section</th>
+
+                            <th>Status</th>
+
+                            <th width="220">
+
+                                Action
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for assignment in assignments %}
+
+                     <tr id="row-{{ assignment.pk }}">
+                        <td>
+
+                            {{ forloop.counter }}
+
+                        </td>
+
+                        <td>
+
+                            {{ assignment.subject }}
+
+                        </td>
+
+                        <td>
+
+                            {{ assignment.teacher }}
+
+                        </td>
+
+                        <td>
+
+                            {{ assignment.department }}
+
+                        </td>
+
+                        <td>
+
+                            {{ assignment.session }}
+
+                        </td>
+
+                        <td>
+
+                            {{ assignment.student_class }}
+
+                        </td>
+
+                        <td>
+
+                            {{ assignment.section }}
+
+                        </td>
+
+                        <td>
+
+                            {% if assignment.is_active %}
+
+                                <span class="badge bg-success">
+
+                                    Active
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    Inactive
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="{% url 'subject_assignment_detail' assignment.pk %}"
+                                class="btn btn-info btn-sm">
+
+                                <i class="bi bi-eye"></i>
+
+                            </a>
+
+                            <a
+                                href="{% url 'subject_assignment_edit' assignment.pk %}"
+                                class="btn btn-warning btn-sm">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                            </a>
+
+                           <button
+                                type="button"
+                                class="btn btn-danger btn-sm delete-btn"
+                                 data-id="{{ assignment.id }}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="9" class="text-center">
+
+                            No Subject Assignment Found.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Pagination -->
+
+            {% if is_paginated %}
+
+            <nav>
+
+                <ul class="pagination justify-content-center">
+
+                    {% if page_obj.has_previous %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?page={{ page_obj.previous_page_number }}">
+
+                            Previous
+
+                        </a>
+
+                    </li>
+
+                    {% endif %}
+
+                    <li class="page-item active">
+
+                        <span class="page-link">
+
+                            {{ page_obj.number }}
+
+                        </span>
+
+                    </li>
+
+                    {% if page_obj.has_next %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?page={{ page_obj.next_page_number }}">
+
+                            Next
+
+                        </a>
+
+                    </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </nav>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+$(function () {
+
+    $(".delete-btn").click(function () {
+
+        let id = $(this).data("id");
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This assignment will be deleted!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, Delete"
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+
+                $.ajax({
+
+                    url: "/subjects/assignment/delete/" + id + "/",
+
+                    type: "POST",
+
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+
+                    success: function(response){
+
+                        Swal.fire({
+                            icon:"success",
+                            title:"Deleted!",
+                            text:response.message,
+                            timer:1500,
+                            showConfirmButton:false
+                        });
+
+                        $("#row-"+id).remove();
+
+                    },
+
+                    error:function(){
+
+                        Swal.fire({
+                            icon:"error",
+                            title:"Error",
+                            text:"Delete failed."
+                        });
+
+                    }
+
+                });
+
+            }
+
+        });
+
+    });
+
+});
+</script>
+
+{% endblock %}
+

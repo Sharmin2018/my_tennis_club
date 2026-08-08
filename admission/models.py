@@ -6,8 +6,7 @@ from academics.models import (
     Session,
     StudentClass,
     Section,
-    BloodGroup,
-    
+    BloodGroup, 
 )
 
 from members.models import Student

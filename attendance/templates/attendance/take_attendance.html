@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="card shadow">
+
+<div class="card-header bg-primary text-white">
+
+<h3>Student Attendance</h3>
+
+</div>
+
+<div class="card-body">
+
+<form method="post">
+
+{% csrf_token %}
+
+<div class="row">
+
+<div class="col-md-3">
+{{ form.session.label_tag }}
+{{ form.session }}
+</div>
+
+<div class="col-md-3">
+{{ form.student_class.label_tag }}
+{{ form.student_class }}
+</div>
+
+<div class="col-md-2">
+{{ form.section.label_tag }}
+{{ form.section }}
+</div>
+
+<div class="col-md-2">
+{{ form.department.label_tag }}
+{{ form.department }}
+</div>
+
+<div class="col-md-2">
+{{ form.date.label_tag }}
+{{ form.date }}
+</div>
+
+</div>
+
+<br>
+
+<button
+type="submit"
+class="btn btn-primary">
+
+Load Students
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+{% if students %}
+
+<form method="post">
+
+{% csrf_token %}
+
+<input
+type="hidden"
+name="save_attendance"
+value="1">
+
+<input
+type="hidden"
+name="date"
+value="{{ date|date:'Y-m-d' }}">
+
+<input type="hidden" name="session" value="{{ form.session.value }}">
+<input type="hidden" name="student_class" value="{{ form.student_class.value }}">
+<input type="hidden" name="section" value="{{ form.section.value }}">
+<input type="hidden" name="department" value="{{ form.department.value }}">
+
+<table class="table table-bordered mt-4">
+
+<thead class="table-dark">
+
+<tr>
+
+<th>Roll</th>
+
+<th>Name</th>
+
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for student in students %}
+
+<tr>
+
+<td>{{ student.roll }}</td>
+
+<td>{{ student.name }}</td>
+
+<td>
+
+<select name="status_{{ student.id }}" class="form-select">
+
+    <option value="Present"
+        {% if student.attendance_status == "Present" %}selected{% endif %}>
+        Present
+    </option>
+
+    <option value="Absent"
+        {% if student.attendance_status == "Absent" %}selected{% endif %}>
+        Absent
+    </option>
+
+    <option value="Late"
+        {% if student.attendance_status == "Late" %}selected{% endif %}>
+        Late
+    </option>
+
+    <option value="Leave"
+        {% if student.attendance_status == "Leave" %}selected{% endif %}>
+        Leave
+    </option>
+
+</select>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+<button
+class="btn btn-success">
+
+Save Attendance
+
+</button>
+
+</form>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

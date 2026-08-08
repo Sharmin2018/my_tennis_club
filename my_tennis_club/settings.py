@@ -36,6 +36,9 @@ INSTALLED_APPS = [
      "admission",
      "academics",
      "promotion",
+     'attendance',
+     'subjects',
+     "routine",
 ]
 
 MIDDLEWARE = [
