@@ -12,7 +12,6 @@ class Subject(models.Model):
 
     name = models.CharField(
         max_length=100,
-        unique=True,
     )
 
     code = models.CharField(

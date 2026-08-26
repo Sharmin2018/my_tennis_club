@@ -3,25 +3,36 @@ from . import views
 
 urlpatterns = [
 
-    path(
-        "",
-        views.RoutineListView.as_view(),
-        name="routine_list",
+    path("",views.RoutineListView.as_view(),name="routine_list",),
+   
+
+    path("add/",views.RoutineCreateView.as_view(),name="routine_add",
+    ),
+    
+  
+    path("student/",views.StudentRoutineView.as_view(),name="student_routine"),
+
+    path("teacher/",views.TeacherRoutineView.as_view(),name="teacher_routine"),
+
+    path("class-room/",views.ClassroomRoutineView.as_view(),name="class_room_routine"
     ),
 
-    path(
-        "add/",
-        views.RoutineCreateView.as_view(),
-        name="routine_add",
-    ),
-
-    path("<int:pk>/",views.RoutineDetailView.as_view(),name="routine_detail",),
+    path("detail/<int:pk>/",views.RoutineDetailView.as_view(),name="routine_detail",),
+    
 
     path("edit/<int:pk>/",views.RoutineUpdateView.as_view(),name="routine_edit",),
+    
 
-    path(
-        "delete/<int:pk>/",
-        views.RoutineDeleteView.as_view(),
-        name="routine_delete",
+    path("delete/<int:pk>/",views.RoutineDeleteView.as_view(),name="routine_delete",
     ),
+
+
+    # AJAX conflict check
+    path(
+        "check-conflict/",
+        views.RoutineConflictCheckView.as_view(),
+        name="routine_check_conflict"
+    ),
+
+
 ]

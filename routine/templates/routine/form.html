@@ -20,94 +20,124 @@
 
         </div>
 
+
         <div class="card-body">
 
             <form method="POST">
 
                 {% csrf_token %}
 
-                <div class="row">
 
-                    <div class="col-md-12 mb-3">
+                {% if form.non_field_errors %}
+
+                    <div class="alert alert-danger">
+
+                        {{ form.non_field_errors }}
+
+                    </div>
+
+                {% endif %}
+
+
+                <div class="row g-3">
+
+
+                    <!-- Subject Assignment -->
+
+                    <div class="col-md-12">
 
                         <label class="form-label">
-
                             Subject Assignment
-
                         </label>
 
                         {{ form.subject_assignment }}
 
-                        {{ form.subject_assignment.errors }}
+                        {% if form.subject_assignment.errors %}
+
+                            <div class="text-danger">
+
+                                {{ form.subject_assignment.errors }}
+
+                            </div>
+
+                        {% endif %}
 
                     </div>
 
-                    <div class="col-md-4 mb-3">
+
+                    <!-- Day -->
+
+                    <div class="col-md-6">
 
                         <label class="form-label">
-
                             Day
-
                         </label>
 
                         {{ form.day }}
 
-                        {{ form.day.errors }}
+                        {% if form.day.errors %}
+
+                            <div class="text-danger">
+                                {{ form.day.errors }}
+                            </div>
+
+                        {% endif %}
 
                     </div>
 
-                    <div class="col-md-4 mb-3">
+
+                    <!-- Period -->
+
+                    <div class="col-md-6">
 
                         <label class="form-label">
-
-                            Start Time
-
+                            Period
                         </label>
 
-                        {{ form.start_time }}
+                        {{ form.period }}
 
-                        {{ form.start_time.errors }}
+                        {% if form.period.errors %}
 
-                    </div>
+                            <div class="text-danger">
+                                {{ form.period.errors }}
+                            </div>
 
-                    <div class="col-md-4 mb-3">
-
-                        <label class="form-label">
-
-                            End Time
-
-                        </label>
-
-                        {{ form.end_time }}
-
-                        {{ form.end_time.errors }}
+                        {% endif %}
 
                     </div>
 
-                    <div class="col-md-6 mb-3">
+
+                    <!-- Room -->
+
+                    <div class="col-md-6">
 
                         <label class="form-label">
-
-                            Room No
-
+                            Room
                         </label>
 
                         {{ form.room }}
 
-                        {{ form.room.errors }}
+                        {% if form.room.errors %}
+
+                            <div class="text-danger">
+                                {{ form.room.errors }}
+                            </div>
+
+                        {% endif %}
 
                     </div>
 
-                    <div class="col-md-6 mb-3">
+
+                    <!-- Active -->
+
+                    <div class="col-md-6 d-flex align-items-center">
 
                         <div class="form-check mt-4">
 
                             {{ form.is_active }}
 
                             <label class="form-check-label">
-
-                                Active Routine
-
+                                Active
                             </label>
 
                         </div>
@@ -116,27 +146,36 @@
 
                 </div>
 
-                <hr>
 
-                <button
-                    type="submit"
-                    class="btn btn-success">
+                <!-- Buttons -->
 
-                    <i class="bi bi-check-circle"></i>
+                <div class="mt-4">
 
-                    Save
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
 
-                </button>
+                        <i class="bi bi-save"></i>
 
-                <a
-                    href="{% url 'routine_list' %}"
-                    class="btn btn-secondary">
+                        {% if object %}
+                            Update Routine
+                        {% else %}
+                            Save Routine
+                        {% endif %}
 
-                    <i class="bi bi-arrow-left"></i>
+                    </button>
 
-                    Back
 
-                </a>
+                    <a
+                        href="{% url 'routine_list' %}"
+                        class="btn btn-secondary">
+
+                        Cancel
+
+                    </a>
+
+                </div>
+
 
             </form>
 

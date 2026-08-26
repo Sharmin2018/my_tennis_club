@@ -120,11 +120,13 @@
 
                         <td>
 
-                            {{ routine.start_time }}
-
-                            -
-
-                            {{ routine.end_time }}
+                            {% if routine.period %}
+                                {{ routine.period.start_time|time:"g:i A" }}
+                                 -
+                                {{ routine.period.end_time|time:"g:i A" }}
+                            {% else %}
+                                 -
+                             {% endif %}
 
                         </td>
 
@@ -292,18 +294,13 @@ document.addEventListener("DOMContentLoaded", function(){
             }).then((result)=>{
 
                 if(result.isConfirmed){
-
-                    fetch("/routine/delete/"+id+"/",{
-
-                        method:"POST",
-
-                        headers:{
-
-                            "X-CSRFToken":"{{ csrf_token }}"
-
-                        }
-
-                    })
+                    fetch("{% url 'routine_delete' 0 %}".replace("0", id), {
+                            method: "POST",
+                            headers: {
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            }
+                        })
+                    
 
                     .then(res=>res.json())
 
