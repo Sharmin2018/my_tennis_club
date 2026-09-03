@@ -1,221 +1,664 @@
+
 {% extends "base.html" %}
 
 {% block content %}
 
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-3" id="routine-print-area">
 
-    <div class="card shadow">
 
-        <div class="card-header bg-primary text-white">
+    <!-- =====================================================
+         SCHOOL HEADER
+         ===================================================== -->
 
-            <div class="d-flex justify-content-between align-items-center">
+    <div class="text-center school-header">
 
-                <h4 class="mb-0">
-                    Class Room Routine
-                </h4>
+        <h2 class="school-name">
+            Halishahar Alhaj Mohabbat Ali
+            City Corporation High School
+        </h2>
 
-                <button
-                    onclick="window.print()"
-                    class="btn btn-light btn-sm">
+        <h5 class="month-year">
 
-                    <i class="bi bi-printer"></i>
-                    Print
+            {% if month_name %}
+                {{ month_name }}
+            {% endif %}
 
-                </button>
+            {% if selected_year %}
+                {{ selected_year }}
+            {% endif %}
 
-            </div>
+        </h5>
 
-        </div>
+        <h4 class="routine-title">
+            CLASSROOM ROUTINE
+        </h4>
 
+    </div>
+
+
+    <!-- =====================================================
+         SELECTOR
+         ===================================================== -->
+
+    <div class="card shadow-sm mb-3 no-print">
 
         <div class="card-body">
 
-            <div class="table-responsive">
-
-                <table class="table table-bordered text-center routine-table">
-
-                    <thead class="table-dark">
-
-                        <tr>
-
-                            <th class="day-column">
-                                Day
-                            </th>
-
-                            {% for period in periods %}
-
-                            <th>
-
-                                <div>
-                                    {{ period.name }}
-                                </div>
-
-                                <small>
-                                    {{ period.start_time|time:"h:i A" }}
-                                    -
-                                    {{ period.end_time|time:"h:i A" }}
-                                </small>
-
-                            </th>
-
-                            {% endfor %}
-
-                        </tr>
-
-                    </thead>
+            <form method="GET"
+                  class="row g-2 align-items-end">
 
 
-                    <tbody>
+                <!-- ================= MONTH ================= -->
 
-                        {% for row in grid %}
+                <div class="col-md-3">
 
-                        <tr>
+                    <label class="form-label fw-bold">
+                        Month
+                    </label>
 
-                            <th class="table-secondary">
+                    <select name="month"
+                            class="form-select">
 
-                                {{ row.day }}
+                        <option value="">
+                            Select Month
+                        </option>
 
-                            </th>
+                        {% for value, name in months %}
 
+                        <option value="{{ value }}"
 
-                            {% for cell in row.cells %}
+                            {% if selected_month|stringformat:"s" == value|stringformat:"s" %}
+                                selected
+                            {% endif %}>
 
-                            <td class="routine-cell">
+                            {{ name }}
 
-                               {% if cell.routine %}
-
-    <div class="subject-code">
-        {{ cell.routine.subject_assignment.subject.code }}
-    </div>
-
-    <div class="teacher-name">
-        {{ cell.routine.subject_assignment.teacher.name }}
-    </div>
-
-    <div class="routine-room">
-
-        {{ cell.routine.subject_assignment.student_class }}
-        -
-        {{ cell.routine.subject_assignment.section }}
-
-    </div>
-
-{% else %}
-
-    <span class="empty-cell">—</span>
-
-{% endif %}
-
-                            </td>
-
-                            {% endfor %}
-
-                        </tr>
+                        </option>
 
                         {% endfor %}
 
-                    </tbody>
+                    </select>
 
-                </table>
+                </div>
 
-            </div>
+
+                <!-- ================= YEAR ================= -->
+
+                <div class="col-md-3">
+
+                    <label class="form-label fw-bold">
+                        Year
+                    </label>
+
+                    <select name="year"
+                            class="form-select">
+
+                        <option value="">
+                            Select Year
+                        </option>
+
+                        {% for y in years %}
+
+                        <option value="{{ y }}"
+
+                            {% if selected_year|stringformat:"s" == y|stringformat:"s" %}
+                                selected
+                            {% endif %}>
+
+                            {{ y }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- ================= CLASSROOM ================= -->
+
+                <div class="col-md-4">
+
+                    <label class="form-label fw-bold">
+                        Classroom
+                    </label>
+
+                    <select name="room"
+                            class="form-select">
+
+                        <option value="">
+                            Select Room
+                        </option>
+
+                        {% for r in rooms %}
+
+                        <option value="{{ r }}"
+
+                            {% if selected_room == r %}
+                                selected
+                            {% endif %}>
+
+                            Room {{ r }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- ================= SHOW ================= -->
+
+                <div class="col-md-2">
+
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+
+                        <i class="bi bi-search"></i>
+
+                        Show
+
+                    </button>
+
+                </div>
+
+            </form>
 
         </div>
 
     </div>
+
+
+    <!-- =====================================================
+         PRINT BUTTON
+         ===================================================== -->
+
+    <div class="text-end mb-2 no-print">
+
+        <button onclick="window.print()"
+                class="btn btn-success">
+
+            <i class="bi bi-printer"></i>
+
+            Print
+
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         ROUTINE HEADING
+         ===================================================== -->
+
+    <div class="routine-info">
+
+
+        <!-- ================= LEFT ================= -->
+
+        <div class="info-left">
+
+            <strong>
+                Classroom:
+            </strong>
+
+            {% if room_name %}
+                Room {{ room_name }}
+            {% endif %}
+
+        </div>
+
+
+        <!-- ================= RIGHT ================= -->
+
+        <div class="info-right">
+
+            <strong>
+                Total Period / Week:
+            </strong>
+
+            {{ total_periods_week }}
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         ROUTINE TABLE
+         ===================================================== -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered text-center routine-table">
+
+
+            <!-- ================= TABLE HEADER ================= -->
+
+            <thead>
+
+                <tr>
+
+                    <th class="day-column">
+                        Day
+                    </th>
+
+
+                    {% for period in periods %}
+
+                    <th>
+
+                        <div class="period-number">
+
+                            Period {{ period.number }}
+
+                        </div>
+
+                        <small class="period-time">
+
+                            {{ period.start_time|time:"H:i" }}
+
+                            -
+
+                            {{ period.end_time|time:"H:i" }}
+
+                        </small>
+
+                    </th>
+
+                    {% endfor %}
+
+                </tr>
+
+            </thead>
+
+
+            <!-- ================= TABLE BODY ================= -->
+
+            <tbody>
+
+            {% for row in grid.grid %}
+
+            <tr>
+
+
+                <!-- ================= DAY ================= -->
+
+                <th class="day-cell">
+
+                    {{ row.day }}
+
+                </th>
+
+
+                <!-- ================= CELLS ================= -->
+
+                {% for cell in row.cells %}
+
+                <td class="routine-cell">
+
+                    {% if cell.routine %}
+
+
+                        <!-- SUBJECT -->
+
+                        <div class="subject-code">
+
+                            {{ cell.routine.subject_assignment.subject.code }}
+
+                        </div>
+
+
+                        <!-- TEACHER -->
+
+                        <div class="teacher-name">
+
+                            {{ cell.routine.subject_assignment.teacher }}
+
+                        </div>
+
+
+                        <!-- CLASS + SECTION -->
+
+                        <div class="class-name">
+
+                            {{ cell.routine.subject_assignment.student_class }}
+
+                            {% if cell.routine.subject_assignment.section %}
+
+                                -
+
+                                {{ cell.routine.subject_assignment.section }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                    {% endif %}
+
+                </td>
+
+                {% endfor %}
+
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- =====================================================
+         SIGNATURE
+         ===================================================== -->
+
+    <div class="signature-area">
+
+        <div>
+
+            <div class="signature-line"></div>
+
+            <strong>
+                Coordinator
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <div class="signature-line"></div>
+
+            <strong>
+                Principal
+            </strong>
+
+        </div>
+
+    </div>
+
 
 </div>
 
 
+<!-- =========================================================
+     STYLE
+     ========================================================= -->
+
 <style>
+
+/* =========================================================
+   SCHOOL HEADER
+   ========================================================= */
+
+.school-header {
+
+    text-align: center;
+
+    margin-bottom: 15px;
+
+}
+
+.school-name {
+
+    margin: 0;
+
+    font-weight: bold;
+
+}
+
+.month-year {
+
+    margin: 4px 0;
+
+    font-weight: 600;
+
+}
+
+.routine-title {
+
+    margin: 5px 0 0 0;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================================================
+   ROUTINE INFORMATION
+   ========================================================= */
+
+.routine-info {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    width: 100%;
+
+    margin-top: 8px;
+
+    margin-bottom: 10px;
+
+    font-size: 16px;
+
+}
+
+.info-left {
+
+    text-align: left;
+
+}
+
+.info-right {
+
+    text-align: right;
+
+}
+
+
+/* =========================================================
+   ROUTINE TABLE
+   ========================================================= */
 
 .routine-table {
 
-    min-width: 1100px;
+    width: 100%;
+
+    text-align: center;
 
     vertical-align: middle;
 
-}
+    border-collapse: collapse;
 
+}
 
 .routine-table th {
 
+    text-align: center;
+
     vertical-align: middle;
+
+    background: #212529;
+
+    color: white;
 
 }
 
+.routine-table td {
+
+    text-align: center;
+
+    vertical-align: middle;
+
+}
 
 .day-column {
 
-    min-width: 120px;
+    width: 100px;
+
+}
+
+.day-cell {
+
+    width: 100px;
+
+    background: #f1f3f5 !important;
+
+    color: #000 !important;
+
+    font-weight: bold;
 
 }
 
 
-.routine-table thead th {
-
-    min-width: 140px;
-
-}
-
+/* =========================================================
+   ROUTINE CELL
+   ========================================================= */
 
 .routine-cell {
 
-    height: 100px;
+    height: 85px;
+
+    min-width: 130px;
 
     vertical-align: middle;
 
-    padding: 8px;
-
 }
-
 
 .subject-code {
 
-    font-size: 17px;
+    font-size: 16px;
 
-    font-weight: 700;
+    font-weight: bold;
 
 }
-
 
 .teacher-name {
 
     font-size: 13px;
 
-    margin-top: 5px;
+    font-weight: 600;
 
 }
 
-
-.routine-room {
+.class-name {
 
     font-size: 12px;
 
-    margin-top: 4px;
+}
+
+
+/* =========================================================
+   SIGNATURE
+   ========================================================= */
+
+.signature-area {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 45px;
+
+    padding: 0 80px;
+
+}
+
+.signature-area > div {
+
+    width: 180px;
+
+    text-align: center;
+
+}
+
+.signature-line {
+
+    border-top: 1px solid #000;
+
+    margin-bottom: 5px;
 
 }
 
 
-.empty-cell {
-
-    color: #bbb;
-
-    font-size: 20px;
-
-}
-
+/* =========================================================
+   PRINT
+   ========================================================= */
 
 @media print {
 
-    .navbar,
+    @page {
+
+        size: A4 landscape;
+
+        margin: 8mm;
+
+    }
+
+
+    html,
+    body {
+
+        width: 100% !important;
+
+        margin: 0 !important;
+
+        padding: 0 !important;
+
+        background: white !important;
+
+    }
+
+
+    /* HIDE DASHBOARD / SIDEBAR / SELECTORS */
+
+    nav,
     .sidebar,
-    .btn,
-    .card-header button {
+    .no-print,
+    form,
+    button,
+    .btn {
 
         display: none !important;
 
     }
+
+
+    main {
+
+        width: 100% !important;
+
+        margin: 0 !important;
+
+        padding: 0 !important;
+
+    }
+
+
+    .container-fluid {
+
+        width: 100% !important;
+
+        max-width: none !important;
+
+        margin: 0 !important;
+
+        padding: 0 !important;
+
+    }
+
 
     .card {
 
@@ -223,30 +666,201 @@
 
         box-shadow: none !important;
 
+        margin: 0 !important;
+
+        padding: 0 !important;
+
     }
 
-    .container-fluid {
+
+    .card-body {
+
+        padding: 0 !important;
+
+        margin: 0 !important;
+
+    }
+
+
+    /* SCHOOL HEADER */
+
+    .school-header {
+
+        margin-top: 0 !important;
+
+        margin-bottom: 8px !important;
+
+    }
+
+
+    .school-name {
+
+        font-size: 17px !important;
+
+    }
+
+
+    .month-year {
+
+        font-size: 12px !important;
+
+    }
+
+
+    .routine-title {
+
+        font-size: 14px !important;
+
+        margin: 3px 0 !important;
+
+    }
+
+
+    /* ROUTINE INFO */
+
+    .routine-info {
+
+        margin-top: 5px !important;
+
+        margin-bottom: 7px !important;
+
+        font-size: 11px !important;
+
+    }
+
+
+    /* TABLE */
+
+    .table-responsive {
+
+        overflow: visible !important;
 
         width: 100% !important;
 
-        max-width: 100% !important;
-
     }
+
 
     .routine-table {
 
-        font-size: 11px;
+        width: 100% !important;
+
+        margin: 0 !important;
+
+        font-size: 9px !important;
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
 
     }
 
-    .routine-cell {
 
-        height: 70px;
+    .routine-table thead {
+
+        display: table-header-group;
+
+    }
+
+
+    .routine-table tr {
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+
+    }
+
+
+    .routine-table th,
+    .routine-table td {
+
+        padding: 3px !important;
+
+        min-width: 0 !important;
+
+        height: 50px !important;
+
+    }
+
+
+    /* PERIOD + TIME BLACK */
+
+    .routine-table thead th {
+
+        color: #000 !important;
+
+    }
+
+
+    .period-number {
+
+        color: #000 !important;
+
+        font-weight: bold;
+
+    }
+
+
+    .period-time {
+
+        color: #000 !important;
+
+    }
+
+
+    /* DAY */
+
+    .day-cell {
+
+        color: #000 !important;
+
+        background: #f1f3f5 !important;
+
+    }
+
+
+    /* CELL TEXT */
+
+    .subject-code {
+
+        font-size: 11px !important;
+
+    }
+
+
+    .teacher-name {
+
+        font-size: 8px !important;
+
+    }
+
+
+    .class-name {
+
+        font-size: 8px !important;
+
+    }
+
+
+    /* SIGNATURE */
+
+    .signature-area {
+
+        margin-top: 15px !important;
+
+        padding: 0 50px !important;
+
+        font-size: 9px !important;
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
 
     }
 
 }
 
 </style>
+
 
 {% endblock %}

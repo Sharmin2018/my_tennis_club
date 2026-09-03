@@ -5,7 +5,10 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.http import JsonResponse
-
+from academics.models import StudentClass, Session, Section
+from teachers.models import Teacher
+from departments.models import Department
+from datetime import datetime
 
 from django.views.generic import (
     ListView,
@@ -34,33 +37,34 @@ DAYS = [
 
 def build_routine_grid(routines):
 
-    periods = list(
-        Period.objects.filter(
-            is_active=True
-        ).order_by("number")
-    )
+    periods = Period.objects.filter(
+        is_active=True
+    ).order_by("number")
+
+    days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+    ]
 
     routine_map = {}
 
     for routine in routines:
 
-        if routine.period_id:
+        key = (
+            routine.day,
+            routine.period_id
+        )
 
-            key = (
-                routine.day,
-                routine.period_id
-            )
-
-            routine_map[key] = routine
+        routine_map[key] = routine
 
     grid = []
 
-    for day in DAYS:
+    for day in days:
 
-        row = {
-            "day": day,
-            "cells": []
-        }
+        cells = []
 
         for period in periods:
 
@@ -68,20 +72,21 @@ def build_routine_grid(routines):
                 (day, period.id)
             )
 
-            row["cells"].append({
+            cells.append({
                 "period": period,
                 "routine": routine,
             })
 
-        grid.append(row)
+        grid.append({
+            "day": day,
+            "cells": cells,
+        })
 
     return {
-        "days": DAYS,
         "periods": periods,
+        "days": days,
         "grid": grid,
     }
-
-
 
 # =========================================================
 # NORMAL ROUTINE LIST
@@ -344,6 +349,7 @@ class RoutineConflictCheckView(LoginRequiredMixin, View):
 
         })
 
+
 # =========================================================
 # STUDENT ROUTINE
 # =========================================================
@@ -351,35 +357,232 @@ class RoutineConflictCheckView(LoginRequiredMixin, View):
 class StudentRoutineView(LoginRequiredMixin, ListView):
 
     model = Routine
-
     template_name = "routine/student.html"
-
     context_object_name = "routines"
 
     def get_queryset(self):
 
-        return Routine.objects.select_related(
+        qs = Routine.objects.select_related(
             "period",
             "subject_assignment",
             "subject_assignment__subject",
             "subject_assignment__teacher",
+            "subject_assignment__department",
+            "subject_assignment__session",
             "subject_assignment__student_class",
             "subject_assignment__section",
         ).filter(
             is_active=True
         )
 
+        # -----------------------------
+        # GET FILTER VALUES
+        # -----------------------------
+
+        month = self.request.GET.get("month")
+        year = self.request.GET.get("year")
+        department = self.request.GET.get("department")
+        session = self.request.GET.get("session")
+        student_class = self.request.GET.get("student_class")
+        section = self.request.GET.get("section")
+
+        # -----------------------------
+        # FILTER
+        # -----------------------------
+
+        if month:
+            qs = qs.filter(month=month)
+
+        if year:
+            qs = qs.filter(year=year)
+
+        if department:
+            qs = qs.filter(
+                subject_assignment__department_id=department
+            )
+
+        if session:
+            qs = qs.filter(
+                subject_assignment__session_id=session
+            )
+
+        if student_class:
+            qs = qs.filter(
+                subject_assignment__student_class_id=student_class
+            )
+
+        if section:
+            qs = qs.filter(
+                subject_assignment__section_id=section
+            )
+
+        return qs.order_by(
+            "day",
+            "period__number"
+        )
+
+   
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
 
+    # =================================================
+    # FILTER VALUES
+    # =================================================
+
+        month = self.request.GET.get("month")
+        year = self.request.GET.get("year")
+        department_id = self.request.GET.get("department")
+        session_id = self.request.GET.get("session")
+        student_class_id = self.request.GET.get("student_class")
+        section_id = self.request.GET.get("section")
+
+    # =================================================
+    # SELECTOR DATA
+    # =================================================
+
+        context["departments"] = Department.objects.all().order_by("name")
+
+        context["sessions"] = Session.objects.all().order_by("name")
+
+        context["classes"] = StudentClass.objects.all().order_by("id")
+
+        context["sections"] = Section.objects.all().order_by("id")
+
+    # =================================================
+    # MONTHS
+    # =================================================
+
+        context["months"] = Routine._meta.get_field(
+            "month"
+        ).choices
+
+    # =================================================
+    # YEARS
+    # =================================================
+
+        context["years"] = range(2025, 2051)
+
+    # =================================================
+    # PERIODS
+    # =================================================
+
+        context["periods"] = Period.objects.filter(
+            is_active=True
+        ).order_by("number")
+
+    # =================================================
+    # SELECTED OBJECTS
+    # =================================================
+
+        selected_department = None
+        selected_session = None
+        selected_class = None
+        selected_section = None
+
+        if department_id:
+            selected_department = Department.objects.filter(
+                pk=department_id
+            ).first()
+
+        if session_id:
+            selected_session = Session.objects.filter(
+                pk=session_id
+            ).first()
+
+        if student_class_id:
+            selected_class = StudentClass.objects.filter(
+                pk=student_class_id
+            ).first()
+
+        if section_id:
+            selected_section = Section.objects.filter(
+                pk=section_id
+            ).first()
+
+    # =================================================
+    # ROUTINES
+    # =================================================
+
         routines = self.get_queryset()
 
-        context.update(
-            build_routine_grid(routines)
+    # =================================================
+    # BUILD GRID
+    # =================================================
+
+        grid = build_routine_grid(routines)
+
+    # =================================================
+    # TOTAL PERIOD / WEEK
+    # =================================================
+
+        total_periods_week = routines.count()
+
+    # =================================================
+    # MONTH NAME
+    # =================================================
+
+        month_name = ""
+
+        if month:
+
+            month_choices = dict(
+                Routine._meta.get_field("month").choices
+            )
+
+            month_name = month_choices.get(
+                int(month),
+                ""
+            )
+
+    # =================================================
+    # CONTEXT
+    # =================================================
+
+        context["grid"] = grid
+
+    # Selector selected values
+        context["selected_month"] = month
+        context["selected_year"] = year
+
+        context["selected_department"] = department_id
+        context["selected_session"] = session_id
+        context["selected_class"] = student_class_id
+        context["selected_section"] = section_id
+
+    # Heading names
+        context["selected_class_name"] = (
+            str(selected_class)
+            if selected_class
+            else ""
         )
 
+        context["selected_section_name"] = (
+            str(selected_section)
+            if selected_section
+            else ""
+        )
+
+        context["department_name"] = (
+            str(selected_department)
+            if selected_department
+            else ""
+        )
+
+        context["session_name"] = (
+            str(selected_session)
+            if selected_session
+            else ""
+        )
+
+        context["total_periods_week"] = total_periods_week
+
+        context["month_name"] = month_name
+
+        context["title"] = "Student Routine"
+
         return context
+
 
 # =========================================================
 # TEACHER ROUTINE
@@ -388,69 +591,347 @@ class StudentRoutineView(LoginRequiredMixin, ListView):
 class TeacherRoutineView(LoginRequiredMixin, ListView):
 
     model = Routine
-
     template_name = "routine/teacher.html"
-
     context_object_name = "routines"
 
     def get_queryset(self):
 
-        return Routine.objects.select_related(
+        qs = Routine.objects.select_related(
             "period",
             "subject_assignment",
             "subject_assignment__subject",
             "subject_assignment__teacher",
+            "subject_assignment__department",
+            "subject_assignment__session",
             "subject_assignment__student_class",
             "subject_assignment__section",
         ).filter(
             is_active=True
         )
 
+        month = self.request.GET.get("month")
+        year = self.request.GET.get("year")
+        department = self.request.GET.get("department")
+        session = self.request.GET.get("session")
+        teacher = self.request.GET.get("teacher")
+
+        if month:
+            qs = qs.filter(month=month)
+
+        if year:
+            qs = qs.filter(year=year)
+
+        if department:
+            qs = qs.filter(
+                subject_assignment__department_id=department
+            )
+
+        if session:
+            qs = qs.filter(
+                subject_assignment__session_id=session
+            )
+
+        if teacher:
+            qs = qs.filter(
+                subject_assignment__teacher_id=teacher
+            )
+
+        return qs.order_by(
+            "day",
+            "period__number"
+        )
+
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
 
+        month = self.request.GET.get("month")
+        year = self.request.GET.get("year")
+        department_id = self.request.GET.get("department")
+        session_id = self.request.GET.get("session")
+        teacher_id = self.request.GET.get("teacher")
+
+        # =================================================
+        # SELECTOR DATA
+        # =================================================
+
+        context["departments"] = Department.objects.all().order_by("name")
+
+        context["sessions"] = Session.objects.all().order_by("name")
+
+        context["teachers"] = Teacher.objects.all().order_by("name")
+
+        context["months"] = Routine._meta.get_field(
+            "month"
+        ).choices
+
+        context["years"] = range(2025, 2051)
+
+        context["periods"] = Period.objects.filter(
+            is_active=True
+        ).order_by("number")
+
+        # =================================================
+        # SELECTED OBJECTS
+        # =================================================
+
+        selected_department = None
+        selected_session = None
+        selected_teacher = None
+
+        if department_id:
+
+            selected_department = Department.objects.filter(
+                pk=department_id
+            ).first()
+
+        if session_id:
+
+            selected_session = Session.objects.filter(
+                pk=session_id
+            ).first()
+
+        if teacher_id:
+
+            selected_teacher = Teacher.objects.filter(
+                pk=teacher_id
+            ).first()
+
+        # =================================================
+        # ROUTINES
+        # =================================================
+
         routines = self.get_queryset()
 
-        context.update(
-            build_routine_grid(routines)
+        # =================================================
+        # BUILD GRID
+        # =================================================
+
+        grid = build_routine_grid(routines)
+
+        # =================================================
+        # TOTAL PERIOD / WEEK
+        # =================================================
+
+        total_periods_week = routines.count()
+
+        # =================================================
+        # MONTH NAME
+        # =================================================
+
+        month_name = ""
+
+        if month:
+
+            month_choices = dict(
+                Routine._meta.get_field("month").choices
+            )
+
+            month_name = month_choices.get(
+                int(month),
+                ""
+            )
+
+        # =================================================
+        # CONTEXT
+        # =================================================
+
+        context["grid"] = grid
+
+        context["selected_month"] = month
+        context["selected_year"] = year
+
+        context["selected_department"] = department_id
+        context["selected_session"] = session_id
+        context["selected_teacher"] = teacher_id
+       
+
+        context["department_name"] = (
+            str(selected_department)
+            if selected_department
+            else ""
         )
+
+        context["session_name"] = (
+            str(selected_session)
+            if selected_session
+            else ""
+        )
+
+        context["teacher_name"] = (
+            str(selected_teacher)
+            if selected_teacher
+            else ""
+        )
+        context["selected_teacher_name"] = (
+                            selected_teacher.name
+                            if selected_teacher
+                            else ""
+                            )
+        context["selected_teacher_designation"] = (
+                    selected_teacher.designation
+                    if selected_teacher
+                    else ""
+                    )
+
+        context["total_periods_week"] = total_periods_week
+
+        context["month_name"] = month_name
+
+        context["title"] = "Teacher Routine"
 
         return context
 
+
+
 # =========================================================
-# CLASS ROOM ROUTINE
+# CLASSROOM ROUTINE
 # =========================================================
 
 class ClassroomRoutineView(LoginRequiredMixin, ListView):
 
     model = Routine
-
     template_name = "routine/classroom.html"
-
     context_object_name = "routines"
 
     def get_queryset(self):
 
-        return Routine.objects.select_related(
+        qs = Routine.objects.select_related(
             "period",
             "subject_assignment",
             "subject_assignment__subject",
             "subject_assignment__teacher",
+            "subject_assignment__department",
+            "subject_assignment__session",
             "subject_assignment__student_class",
             "subject_assignment__section",
         ).filter(
             is_active=True
         )
 
+        month = self.request.GET.get("month")
+        year = self.request.GET.get("year")
+        room = self.request.GET.get("room")
+
+        if month:
+
+            qs = qs.filter(
+                month=month
+            )
+
+        if year:
+
+            qs = qs.filter(
+                year=year
+            )
+
+        if room:
+
+            qs = qs.filter(
+                room__iexact=room.strip()
+            )
+
+        return qs.order_by(
+            "day",
+            "period__number"
+        )
+
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
 
+        month = self.request.GET.get("month")
+        year = self.request.GET.get("year")
+        room = self.request.GET.get("room")
+
+        # =================================================
+        # MONTH
+        # =================================================
+
+        context["months"] = Routine._meta.get_field(
+            "month"
+        ).choices
+
+        # =================================================
+        # YEAR
+        # =================================================
+
+        context["years"] = range(2025, 2031)
+
+        # =================================================
+        # PERIODS
+        # =================================================
+
+        context["periods"] = Period.objects.filter(
+            is_active=True
+        ).order_by("number")
+
+        # =================================================
+        # ROOM LIST
+        # =================================================
+
+        rooms = (
+            Routine.objects
+            .filter(is_active=True)
+            .values_list("room", flat=True)
+            .distinct()
+            .order_by("room")
+        )
+
+        context["rooms"] = rooms
+
+        # =================================================
+        # ROUTINES
+        # =================================================
+
         routines = self.get_queryset()
 
-        context.update(
-            build_routine_grid(routines)
-        )
+        # =================================================
+        # BUILD GRID
+        # =================================================
+
+        grid = build_routine_grid(routines)
+
+        # =================================================
+        # TOTAL PERIOD / WEEK
+        # =================================================
+
+        total_periods_week = routines.count()
+
+        # =================================================
+        # MONTH NAME
+        # =================================================
+
+        month_name = ""
+
+        if month:
+
+            month_choices = dict(
+                Routine._meta.get_field("month").choices
+            )
+
+            month_name = month_choices.get(
+                int(month),
+                ""
+            )
+
+        # =================================================
+        # CONTEXT
+        # =================================================
+
+        context["grid"] = grid
+
+        context["selected_month"] = month
+        context["selected_year"] = year
+
+        context["selected_room"] = room
+
+        context["room_name"] = room or ""
+
+        context["total_periods_week"] = total_periods_week
+
+        context["month_name"] = month_name
+
+        context["title"] = "Classroom Routine"
 
         return context

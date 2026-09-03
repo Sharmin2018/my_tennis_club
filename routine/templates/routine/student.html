@@ -2,131 +2,398 @@
 
 {% block content %}
 
-<div class="container-fluid mt-4">
 
-    <div class="card shadow">
+    <div class="container-fluid mt-3" id="routine-print-area">
 
-        <div class="card-header bg-primary text-white">
+    <!-- ================= HEADER ================= -->
 
-            <div class="d-flex justify-content-between align-items-center">
+    <div class="text-center mb-3">
 
-                <h4 class="mb-0">
-                    Student Routine
-                </h4>
+        <h2 class="fw-bold">
+            Halishahar Alhaj Mohabbat Ali City Corporation High School
+        </h2>
 
-                <button
-                    onclick="window.print()"
-                    class="btn btn-light btn-sm">
+        <h5>
+            {% for m, name in months %}
+                {% if selected_month|stringformat:"s" == m|stringformat:"s" %}
+                    {{ name }}
+                {% endif %}
+            {% endfor %}
+            {{ selected_year }}
+        </h5>
 
-                    <i class="bi bi-printer"></i>
-                    Print
+        <h4 class="fw-bold">
+            Student Routine
+        </h4>
 
-                </button>
+    </div>
 
-            </div>
 
-        </div>
+    <!-- ================= FILTER ================= -->
 
+    <div class="card shadow-sm mb-3">
 
         <div class="card-body">
 
-            <div class="table-responsive">
+            <form method="GET"
+                  class="row g-2 align-items-end">
 
-                <table class="table table-bordered text-center routine-table">
+                <!-- Month -->
 
-                    <thead class="table-dark">
+                <div class="col-md-3">
 
-                        <tr>
+                    <label class="form-label fw-bold">
+                        Month
+                    </label>
 
-                            <th class="day-column">
-                                Day
-                            </th>
+                    <select name="month"
+                            class="form-select">
 
-                            {% for period in periods %}
+                        {% for value, name in months %}
 
-                            <th>
+                            <option value="{{ value }}"
+                                {% if selected_month|stringformat:"s" == value|stringformat:"s" %}
+                                    selected
+                                {% endif %}>
 
-                                <div>
-                                    {{ period.name }}
-                                </div>
+                                {{ name }}
 
-                                <small>
-                                    {{ period.start_time|time:"h:i A" }}
-                                    -
-                                    {{ period.end_time|time:"h:i A" }}
-                                </small>
-
-                            </th>
-
-                            {% endfor %}
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        {% for row in grid %}
-
-                        <tr>
-
-                            <th class="table-secondary">
-
-                                {{ row.day }}
-
-                            </th>
-
-
-                            {% for cell in row.cells %}
-
-                            <td class="routine-cell">
-
-                                {% if cell.routine %}
-
-                                    <div class="subject-code">
-
-                                        {{ cell.routine.subject_assignment.subject.code }}
-
-                                    </div>
-
-
-                                    <div class="teacher-name">
-
-                                        {{ cell.routine.subject_assignment.teacher.name }}
-
-                                    </div>
-
-
-                                    <div class="routine-room">
-
-                                        Room:
-                                        {{ cell.routine.room }}
-
-                                    </div>
-
-                                {% else %}
-
-                                    <span class="empty-cell">
-                                        —
-                                    </span>
-
-                                {% endif %}
-
-                            </td>
-
-                            {% endfor %}
-
-                        </tr>
+                            </option>
 
                         {% endfor %}
 
-                    </tbody>
+                    </select>
 
-                </table>
+                </div>
 
-            </div>
 
+                <!-- Year -->
+
+                <div class="col-md-2">
+
+                    <label class="form-label fw-bold">
+                        Year
+                    </label>
+
+                    <select name="year"
+                            class="form-select">
+
+                        {% for y in years %}
+
+                            <option value="{{ y }}"
+                                {% if selected_year|stringformat:"s" == y|stringformat:"s" %}
+                                    selected
+                                {% endif %}>
+
+                                {{ y }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Department -->
+
+                <div class="col-md-2">
+
+                    <label class="form-label fw-bold">
+                        Department
+                    </label>
+
+                    <select name="department"
+                            class="form-select">
+
+                        <option value="">
+                            All Departments
+                        </option>
+
+                        {% for department in departments %}
+
+                            <option value="{{ department.id }}"
+                                {% if selected_department == department.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}>
+
+                                {{ department }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                 <!-- Session -->
+
+                    <div class="col-md-2">
+
+    <label class="form-label fw-bold">
+        Session
+    </label>
+
+    <select name="session"
+            class="form-select">
+
+        <option value="">
+            All Sessions
+        </option>
+
+        {% for session in sessions %}
+
+            <option value="{{ session.id }}"
+                {% if selected_session == session.id|stringformat:"s" %}
+                    selected
+                {% endif %}>
+
+                {{ session }}
+
+            </option>
+
+        {% endfor %}
+
+    </select>
+
+</div>
+                <!-- Class -->
+
+                <div class="col-md-2">
+
+                    <label class="form-label fw-bold">
+                        Class
+                    </label>
+
+                    <select name="student_class"
+                            class="form-select">
+
+                        <option value="">
+                            All Classes
+                        </option>
+
+                        {% for student_class in classes %}
+
+                            <option value="{{ student_class.id }}"
+                                {% if selected_class == student_class.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}>
+
+                                {{ student_class }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Section -->
+
+                <div class="col-md-2">
+
+                    <label class="form-label fw-bold">
+                        Section
+                    </label>
+
+                    <select name="section"
+                            class="form-select">
+
+                        <option value="">
+                            All Sections
+                        </option>
+
+                        {% for section in sections %}
+
+                            <option value="{{ section.id }}"
+                                {% if selected_section == section.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}>
+
+                                {{ section }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Search -->
+
+                <div class="col-md-1">
+
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+
+                        <i class="bi bi-search"></i>
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= PRINT BUTTON ================= -->
+
+    <div class="text-end mb-2">
+
+        <button onclick="window.print()"
+                class="btn btn-success">
+
+            <i class="bi bi-printer"></i>
+
+            Print
+
+        </button>
+
+    </div>
+
+      <!-- ================= PRINT BUTTON end================= -->
+
+    <div class="routine-info">
+
+    <!-- LEFT -->
+    <div class="info-left">
+        <strong>Class:</strong>
+        {{ selected_class_name }}
+
+        <span class="ms-3">
+            <strong>Section:</strong>
+            {{ selected_section_name }}
+        </span>
+    </div>
+
+
+    <!-- CENTER -->
+    <div class="info-center">
+        <strong>Department:</strong>
+        {{ department_name }}
+    </div>
+
+
+    <!-- RIGHT -->
+    <div class="info-right">
+        <strong>Total Period/Week:</strong>
+        {{ total_periods_week }}
+    </div>
+
+</div>
+
+
+    <!-- ================= ROUTINE TABLE ================= -->
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered routine-table">
+
+            <thead>
+
+                <tr>
+
+                    <th class="day-column">
+                        Day
+                    </th>
+
+                    {% for period in periods %}
+
+                        <th>
+
+                            <div>
+                                Period {{ period.number }}
+                            </div>
+
+                            <small>
+                                {{ period.start_time|time:"H:i" }}
+                                -
+                                {{ period.end_time|time:"H:i" }}
+                            </small>
+
+                        </th>
+
+                    {% endfor %}
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+               {% for row in grid.grid %}
+
+<tr>
+
+    <th class="day-cell">
+        {{ row.day }}
+    </th>
+
+    {% for cell in row.cells %}
+
+        <td>
+
+            {% if cell.routine %}
+
+                <div class="routine-cell">
+
+                    <strong>
+                        {{ cell.routine.subject_assignment.subject.code }}
+                    </strong>
+
+                    <br>
+
+                    {{ cell.routine.subject_assignment.teacher }}
+
+                    <br>
+
+                    <small>
+                        Room: {{ cell.routine.room }}
+                    </small>
+
+                </div>
+
+            {% endif %}
+
+        </td>
+
+    {% endfor %}
+
+</tr>
+
+{% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ================= SIGNATURE ================= -->
+
+    <div class="signature-area">
+
+        <div>
+            __________________________
+            <br>
+            Coordinator
+        </div>
+
+        <div>
+            __________________________
+            <br>
+            Principal
         </div>
 
     </div>
@@ -134,93 +401,136 @@
 </div>
 
 
+<!-- ================= STYLE ================= -->
+
 <style>
 
 .routine-table {
 
-    min-width: 1100px;
+    width: 100%;
+
+    text-align: center;
 
     vertical-align: middle;
 
 }
-
 
 .routine-table th {
 
-    vertical-align: middle;
+    background: #212529;
+
+    color: white;
+
+    min-width: 125px;
 
 }
 
+.routine-table td {
+
+    height: 80px;
+
+    min-width: 125px;
+
+    vertical-align: middle;
+
+}
 
 .day-column {
 
-    min-width: 120px;
+    width: 100px;
 
 }
 
+.day-cell {
 
-.routine-table thead th {
+    background: #f1f3f5 !important;
 
-    min-width: 140px;
+    color: #000 !important;
+
+    font-weight: bold;
 
 }
-
 
 .routine-cell {
 
-    height: 100px;
-
-    vertical-align: middle;
-
-    padding: 8px;
+    line-height: 1.4;
 
 }
 
+.routine-cell strong {
 
-.subject-code {
-
-    font-size: 17px;
-
-    font-weight: 700;
+    font-size: 15px;
 
 }
 
-
-.teacher-name {
-
-    font-size: 13px;
-
-    margin-top: 5px;
-
-}
-
-
-.routine-room {
+.routine-cell small {
 
     font-size: 12px;
 
-    margin-top: 4px;
+}
+
+.signature-area {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 60px;
+
+    padding: 0 80px;
+
+    text-align: center;
 
 }
 
 
-.empty-cell {
-
-    color: #bbb;
-
-    font-size: 20px;
-
-}
-
+/* ================= PRINT ================= */
 
 @media print {
 
-    .navbar,
+    @page {
+
+        size: A4 landscape;
+
+        margin: 8mm;
+
+    }
+
+    body {
+
+        background: white !important;
+
+    }
+
+    nav,
     .sidebar,
-    .btn,
-    .card-header button {
+    form,
+    button,
+    .btn {
 
         display: none !important;
+
+    }
+
+    main {
+
+        width: 100% !important;
+
+        margin: 0 !important;
+
+        padding: 0 !important;
+
+    }
+
+    .container-fluid {
+
+        width: 100% !important;
+
+        max-width: none !important;
+
+        margin: 0 !important;
+
+        padding: 0 !important;
 
     }
 
@@ -232,23 +542,41 @@
 
     }
 
-    .container-fluid {
-
-        width: 100% !important;
-
-        max-width: 100% !important;
-
-    }
-
     .routine-table {
 
-        font-size: 11px;
+        font-size: 10px;
 
     }
 
-    .routine-cell {
+    .routine-table th,
+    .routine-table td {
 
-        height: 70px;
+        padding: 4px !important;
+
+        min-width: 0 !important;
+
+        height: 55px !important;
+
+    }
+
+    .routine-cell strong {
+
+        font-size: 10px;
+
+    }
+
+    .routine-cell span,
+    .routine-cell small {
+
+        font-size: 8px;
+
+    }
+
+    .signature-area {
+
+        margin-top: 25px;
+
+        padding: 0 50px;
 
     }
 

@@ -1,183 +1,273 @@
+
 {% extends "base.html" %}
 
 {% block content %}
 
 <div class="container mt-4">
 
-    <div class="card shadow">
+    <div class="row justify-content-center">
 
-        <div class="card-header bg-primary text-white">
+        <div class="col-md-8 col-lg-7">
 
-            <h4 class="mb-0">
+            <div class="card shadow-sm border-0">
 
-                {% if object %}
-                    Edit Routine
-                {% else %}
-                    Add Routine
-                {% endif %}
+                <!-- ================= HEADER ================= -->
 
-            </h4>
+                <div class="card-header bg-primary text-white">
 
-        </div>
+                    <div class="d-flex justify-content-between align-items-center">
 
+                        <h4 class="mb-0">
 
-        <div class="card-body">
+                            {% if object %}
+                                Edit Routine
+                            {% else %}
+                                Add Routine
+                            {% endif %}
 
-            <form method="POST">
+                        </h4>
 
-                {% csrf_token %}
+                        <a
+                            href="{% url 'routine_list' %}"
+                            class="btn btn-light btn-sm">
 
+                            <i class="bi bi-arrow-left"></i>
+                            Back
 
-                {% if form.non_field_errors %}
-
-                    <div class="alert alert-danger">
-
-                        {{ form.non_field_errors }}
+                        </a>
 
                     </div>
 
-                {% endif %}
+                </div>
 
 
-                <div class="row g-3">
+                <!-- ================= FORM ================= -->
+
+                <div class="card-body">
+
+                    <form method="POST">
+
+                        {% csrf_token %}
 
 
-                    <!-- Subject Assignment -->
+                        <!-- FORM ERRORS -->
 
-                    <div class="col-md-12">
+                        {% if form.non_field_errors %}
 
-                        <label class="form-label">
-                            Subject Assignment
-                        </label>
+                            <div class="alert alert-danger">
 
-                        {{ form.subject_assignment }}
-
-                        {% if form.subject_assignment.errors %}
-
-                            <div class="text-danger">
-
-                                {{ form.subject_assignment.errors }}
+                                {{ form.non_field_errors }}
 
                             </div>
 
                         {% endif %}
 
-                    </div>
+
+                        <!-- SUBJECT ASSIGNMENT -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Subject / Teacher
+
+                            </label>
+
+                            {{ form.subject_assignment }}
+
+                            {% if form.subject_assignment.errors %}
+
+                                <div class="text-danger small">
+
+                                    {{ form.subject_assignment.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
 
 
-                    <!-- Day -->
+                        <!-- DAY -->
 
-                    <div class="col-md-6">
+                        <div class="mb-3">
 
-                        <label class="form-label">
-                            Day
-                        </label>
+                            <label class="form-label fw-semibold">
 
-                        {{ form.day }}
+                                Day
 
-                        {% if form.day.errors %}
+                            </label>
 
-                            <div class="text-danger">
-                                {{ form.day.errors }}
+                            {{ form.day }}
+
+                            {% if form.day.errors %}
+
+                                <div class="text-danger small">
+
+                                    {{ form.day.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- MONTH + YEAR -->
+
+                        <div class="row">
+
+                            <!-- MONTH -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Month
+
+                                </label>
+
+                                {{ form.month }}
+
+                                {% if form.month.errors %}
+
+                                    <div class="text-danger small">
+
+                                        {{ form.month.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
                             </div>
 
-                        {% endif %}
 
-                    </div>
+                            <!-- YEAR -->
 
+                            <div class="col-md-6 mb-3">
 
-                    <!-- Period -->
+                                <label class="form-label fw-semibold">
 
-                    <div class="col-md-6">
+                                    Year
 
-                        <label class="form-label">
-                            Period
-                        </label>
+                                </label>
 
-                        {{ form.period }}
+                                {{ form.year }}
 
-                        {% if form.period.errors %}
+                                {% if form.year.errors %}
 
-                            <div class="text-danger">
-                                {{ form.period.errors }}
+                                    <div class="text-danger small">
+
+                                        {{ form.year.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
                             </div>
 
-                        {% endif %}
-
-                    </div>
+                        </div>
 
 
-                    <!-- Room -->
+                        <!-- PERIOD -->
 
-                    <div class="col-md-6">
+                        <div class="mb-3">
 
-                        <label class="form-label">
-                            Room
-                        </label>
+                            <label class="form-label fw-semibold">
 
-                        {{ form.room }}
+                                Period
 
-                        {% if form.room.errors %}
+                            </label>
 
-                            <div class="text-danger">
-                                {{ form.room.errors }}
-                            </div>
+                            {{ form.period }}
 
-                        {% endif %}
+                            {% if form.period.errors %}
 
-                    </div>
+                                <div class="text-danger small">
+
+                                    {{ form.period.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
 
 
-                    <!-- Active -->
+                        <!-- ROOM -->
 
-                    <div class="col-md-6 d-flex align-items-center">
+                        <div class="mb-3">
 
-                        <div class="form-check mt-4">
+                            <label class="form-label fw-semibold">
+
+                                Room No
+
+                            </label>
+
+                            {{ form.room }}
+
+                            {% if form.room.errors %}
+
+                                <div class="text-danger small">
+
+                                    {{ form.room.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ACTIVE -->
+
+                        <div class="form-check mb-4">
 
                             {{ form.is_active }}
 
-                            <label class="form-check-label">
+                            <label
+                                class="form-check-label fw-semibold">
+
                                 Active
+
                             </label>
 
                         </div>
 
-                    </div>
+
+                        <!-- BUTTONS -->
+
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a
+                                href="{% url 'routine_list' %}"
+                                class="btn btn-secondary">
+
+                                Cancel
+
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary">
+
+                                <i class="bi bi-check-circle"></i>
+
+                                {% if object %}
+                                    Update Routine
+                                {% else %}
+                                    Save Routine
+                                {% endif %}
+
+                            </button>
+
+                        </div>
+
+                    </form>
 
                 </div>
 
-
-                <!-- Buttons -->
-
-                <div class="mt-4">
-
-                    <button
-                        type="submit"
-                        class="btn btn-primary">
-
-                        <i class="bi bi-save"></i>
-
-                        {% if object %}
-                            Update Routine
-                        {% else %}
-                            Save Routine
-                        {% endif %}
-
-                    </button>
-
-
-                    <a
-                        href="{% url 'routine_list' %}"
-                        class="btn btn-secondary">
-
-                        Cancel
-
-                    </a>
-
-                </div>
-
-
-            </form>
+            </div>
 
         </div>
 

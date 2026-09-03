@@ -4,120 +4,27 @@
 
 <div class="container-fluid mt-4">
 
-    <div class="card shadow">
+```
+<!-- ================= SCREEN HEADER ================= -->
 
-        <div class="card-header bg-primary text-white">
+<div class="card shadow no-print">
 
-            <div class="d-flex justify-content-between align-items-center">
+    <div class="card-header bg-primary text-white">
 
-                <h4 class="mb-0">
-                    {{ title }}
-                </h4>
+        <div class="d-flex justify-content-between align-items-center">
 
-                <button
-                    onclick="window.print()"
-                    class="btn btn-light">
+            <h4 class="mb-0">
+                {{ title }}
+            </h4>
 
-                    <i class="bi bi-printer"></i>
-                    Print
+            <button
+                onclick="window.print()"
+                class="btn btn-light">
 
-                </button>
+                <i class="bi bi-printer"></i>
+                Print
 
-            </div>
-
-        </div>
-
-
-        <div class="card-body">
-
-            <div class="table-responsive">
-
-                <table class="table table-bordered text-center routine-table">
-
-                    <thead class="table-dark">
-
-                        <tr>
-
-                            <th style="min-width:120px;">
-                                Day
-                            </th>
-
-                            {% for period in periods %}
-
-                            <th style="min-width:150px;">
-
-                                Period {{ period.number }}
-
-                                <br>
-
-                                <small>
-                                    {{ period.label }}
-                                </small>
-
-                            </th>
-
-                            {% endfor %}
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                    {% for row in grid %}
-
-                    <tr>
-
-                        <th class="day-cell">
-
-                            {{ row.day }}
-
-                        </th>
-
-
-                        {% for item in row.periods %}
-
-                        <td class="routine-cell">
-
-                            {% if item.routine %}
-
-                                <div class="subject-code">
-
-                                    {{ item.routine.subject_assignment.subject.code }}
-
-                                </div>
-
-
-                                <div class="teacher-name">
-
-                                    {{ item.routine.subject_assignment.teacher }}
-
-                                </div>
-
-
-                                <div class="room-name">
-
-                                    Room:
-                                    {{ item.routine.room }}
-
-                                </div>
-
-                            {% endif %}
-
-                        </td>
-
-                        {% endfor %}
-
-                    </tr>
-
-                    {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
+            </button>
 
         </div>
 
@@ -126,15 +33,346 @@
 </div>
 
 
+<!-- ================= PRINT AREA ================= -->
+
+<div class="routine-print-area">
+
+    <!-- ================= ROUTINE HEADER ================= -->
+
+    <div class="routine-header">
+
+        <!-- LEFT -->
+
+        <div class="header-left">
+
+            <div>
+                <strong>Class:</strong>
+                {{ selected_class }}
+            </div>
+
+            <div>
+                <strong>Section:</strong>
+                {{ selected_section }}
+            </div>
+
+        </div>
+
+
+        <!-- CENTER -->
+
+        <div class="header-center">
+
+            <div class="school-name">
+                School Name
+            </div>
+
+            <div class="routine-month">
+
+                {% if month %}
+                    {{ month }}
+                {% endif %}
+
+                {% if year %}
+                    {{ year }}
+                {% endif %}
+
+            </div>
+
+            <div class="routine-title">
+                STUDENT ROUTINE
+            </div>
+
+            <div class="department">
+
+                <strong>Department:</strong>
+                {{ selected_department }}
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT -->
+
+        <div class="header-right">
+
+            <div class="total-title">
+                Total Period / Week
+            </div>
+
+            <div class="total-period">
+                {{ total_period_per_week }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= ROUTINE TABLE ================= -->
+
+    <table class="table table-bordered text-center routine-table">
+
+        <thead>
+
+            <tr>
+
+                <th class="day-heading">
+                    Day
+                </th>
+
+                {% for period in periods %}
+
+                <th>
+
+                    <div class="period-number">
+                        Period {{ period.number }}
+                    </div>
+
+                    <div class="period-time">
+                        {{ period.start_time|time:"H:i" }}
+                        -
+                        {{ period.end_time|time:"H:i" }}
+                    </div>
+
+                </th>
+
+                {% endfor %}
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        {% for row in grid %}
+
+        <tr>
+
+            <!-- DAY -->
+
+            <th class="day-cell">
+
+                {{ row.day }}
+
+            </th>
+
+
+            <!-- PERIOD CELLS -->
+
+            {% for item in row.periods %}
+
+            <td class="routine-cell">
+
+                {% if item.routine %}
+
+                    <!-- SUBJECT CODE -->
+
+                    <div class="subject-code">
+
+                        {{ item.routine.subject_assignment.subject.code }}
+
+                    </div>
+
+
+                    <!-- TEACHER -->
+
+                    <div class="teacher-name">
+
+                        {{ item.routine.subject_assignment.teacher.short_name|default:item.routine.subject_assignment.teacher }}
+
+                    </div>
+
+
+                    <!-- ROOM -->
+
+                    <div class="room-name">
+
+                        Room:
+                        {{ item.routine.room }}
+
+                    </div>
+
+                {% endif %}
+
+            </td>
+
+            {% endfor %}
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+
+    <!-- ================= SIGNATURE ================= -->
+
+    <div class="signature-area">
+
+        <div class="signature-box">
+
+            <div class="signature-line"></div>
+
+            <strong>Coordinator</strong>
+
+        </div>
+
+
+        <div class="signature-box">
+
+            <div class="signature-line"></div>
+
+            <strong>Principal</strong>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
 <style>
 
-.routine-table {
+/* =====================================================
+   SCREEN
+===================================================== */
 
-    vertical-align: middle;
+.routine-print-area {
+
+    background: #fff;
+
+    margin-top: 20px;
+
+    padding: 20px;
 
 }
 
-.routine-table th {
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.routine-header {
+
+    display: grid;
+
+    grid-template-columns: 1fr 2fr 1fr;
+
+    align-items: center;
+
+    margin-bottom: 15px;
+
+}
+
+
+.header-left {
+
+    text-align: left;
+
+    font-size: 14px;
+
+    line-height: 1.8;
+
+}
+
+
+.header-center {
+
+    text-align: center;
+
+}
+
+
+.school-name {
+
+    font-size: 24px;
+
+    font-weight: 700;
+
+}
+
+
+.routine-month {
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    margin-top: 3px;
+
+}
+
+
+.routine-title {
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    margin-top: 3px;
+
+}
+
+
+.department {
+
+    font-size: 14px;
+
+    margin-top: 4px;
+
+}
+
+
+.header-right {
+
+    text-align: right;
+
+}
+
+
+.total-title {
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+.total-period {
+
+    font-size: 26px;
+
+    font-weight: 700;
+
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.routine-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin-bottom: 25px;
+
+}
+
+
+.routine-table th,
+.routine-table td {
+
+    border: 1px solid #000 !important;
 
     text-align: center;
 
@@ -142,80 +380,399 @@
 
 }
 
-.routine-cell {
 
-    height: 90px;
+.routine-table thead th {
 
-    vertical-align: middle;
+    background: #212529;
 
-    font-size: 14px;
+    color: #fff;
+
+    height: 55px;
 
 }
+
+
+.day-heading {
+
+    width: 100px;
+
+}
+
 
 .day-cell {
 
     background: #f1f3f5;
 
-    font-weight: 600;
+    font-weight: 700;
+
+    width: 100px;
+
+    font-size: 14px;
 
 }
 
-.subject-code {
 
-    font-size: 17px;
+.routine-cell {
 
-    font-weight: bold;
+    height: 75px;
 
-    color: #0d6efd;
+    min-width: 125px;
 
-}
-
-.teacher-name {
-
-    font-weight: 600;
-
-    margin-top: 4px;
+    vertical-align: middle;
 
 }
 
-.room-name {
 
-    font-size: 12px;
+.period-number {
 
-    color: #6c757d;
+    font-weight: 700;
+
+    font-size: 13px;
+
+}
+
+
+.period-time {
+
+    font-size: 11px;
+
+    font-weight: normal;
 
     margin-top: 3px;
 
 }
 
 
+/* =====================================================
+   CELL CONTENT
+===================================================== */
+
+.subject-code {
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+}
+
+
+.teacher-name {
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    margin-top: 3px;
+
+}
+
+
+.room-name {
+
+    font-size: 10px;
+
+    margin-top: 2px;
+
+}
+
+
+/* =====================================================
+   SIGNATURE
+===================================================== */
+
+.signature-area {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 35px;
+
+    padding: 0 70px;
+
+}
+
+
+.signature-box {
+
+    width: 180px;
+
+    text-align: center;
+
+}
+
+
+.signature-line {
+
+    border-top: 1px solid #000;
+
+    margin-bottom: 6px;
+
+}
+
+
+/* =====================================================
+   PRINT
+===================================================== */
+
 @media print {
+
+    @page {
+
+        size: A4 landscape;
+
+        margin: 8mm;
+
+    }
+
+
+    html,
+    body {
+
+        width: 297mm;
+
+        height: 210mm;
+
+        margin: 0;
+
+        padding: 0;
+
+        background: #fff !important;
+
+    }
+
+
+    /* Hide website UI */
 
     nav,
     .sidebar,
-    .btn {
+    .no-print,
+    .btn,
+    .card-header {
 
         display: none !important;
 
     }
 
+
     main {
 
         width: 100% !important;
 
-    }
+        max-width: 100% !important;
 
-    .card {
+        padding: 0 !important;
 
-        border: none !important;
-
-        box-shadow: none !important;
+        margin: 0 !important;
 
     }
+
+
+    .container-fluid {
+
+        width: 100% !important;
+
+        margin: 0 !important;
+
+        padding: 0 !important;
+
+    }
+
+
+    .routine-print-area {
+
+        width: 100% !important;
+
+        margin: 0 !important;
+
+        padding: 0 !important;
+
+    }
+
+
+    /* Header */
+
+    .routine-header {
+
+        grid-template-columns: 1fr 2fr 1fr;
+
+        margin-bottom: 8px;
+
+    }
+
+
+    .school-name {
+
+        font-size: 20px;
+
+    }
+
+
+    .routine-month {
+
+        font-size: 13px;
+
+    }
+
+
+    .routine-title {
+
+        font-size: 16px;
+
+    }
+
+
+    .department {
+
+        font-size: 11px;
+
+    }
+
+
+    .header-left {
+
+        font-size: 11px;
+
+    }
+
+
+    .total-title {
+
+        font-size: 10px;
+
+    }
+
+
+    .total-period {
+
+        font-size: 20px;
+
+    }
+
+
+    /* Table */
+
+    .routine-table {
+
+        width: 100% !important;
+
+        margin: 0 !important;
+
+        font-size: 10px;
+
+        table-layout: fixed;
+
+    }
+
+
+    .routine-table th,
+    .routine-table td {
+
+        border: 1px solid #000 !important;
+
+    }
+
+
+    .routine-table thead th {
+
+        height: 38px;
+
+        padding: 3px;
+
+    }
+
+
+    .day-cell {
+
+        width: 70px;
+
+        font-size: 11px;
+
+    }
+
 
     .routine-cell {
 
-        height: 80px;
+        height: 58px;
+
+        min-width: 0;
+
+        padding: 3px;
+
+    }
+
+
+    .period-number {
+
+        font-size: 10px;
+
+    }
+
+
+    .period-time {
+
+        font-size: 8px;
+
+    }
+
+
+    .subject-code {
+
+        font-size: 12px;
+
+    }
+
+
+    .teacher-name {
+
+        font-size: 9px;
+
+    }
+
+
+    .room-name {
+
+        font-size: 8px;
+
+    }
+
+
+    /* Signature */
+
+    .signature-area {
+
+        margin-top: 18px;
+
+        padding: 0 45px;
+
+    }
+
+
+    .signature-box {
+
+        width: 150px;
+
+        font-size: 10px;
+
+    }
+
+
+    .signature-line {
+
+        margin-bottom: 4px;
+
+    }
+
+
+    /* Prevent page break */
+
+    .routine-print-area,
+    .routine-table,
+    .signature-area {
+
+        page-break-inside: avoid;
+
+        break-inside: avoid;
 
     }
 

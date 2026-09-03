@@ -45,6 +45,112 @@
 
     </style>
 
+    <style>
+
+.routine-info{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    align-items:center;
+
+    border:1px solid #000;
+    background:#fff;
+
+    padding:10px 15px;
+    margin-bottom:10px;
+
+    font-size:14px;
+}
+
+.info-left{
+    text-align:left;
+}
+
+.info-center{
+    text-align:center;
+}
+
+.info-right{
+    text-align:right;
+}
+
+
+@media print {
+
+    @page {
+        size: A4 landscape;
+        margin: 8mm;
+    }
+
+    html,
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100% !important;
+        overflow: hidden !important;
+    }
+
+    body * {
+        visibility: hidden !important;
+    }
+
+    #routine-print-area,
+    #routine-print-area * {
+        visibility: visible !important;
+    }
+
+    #routine-print-area {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Filter এবং Print button hide */
+    #routine-print-area form,
+    #routine-print-area button,
+    #routine-print-area .btn {
+        display: none !important;
+    }
+
+    /* Table */
+    .table-responsive {
+        overflow: visible !important;
+    }
+
+    .routine-table {
+        width: 100% !important;
+        margin: 0 !important;
+        page-break-after: avoid !important;
+        break-after: avoid-page !important;
+    }
+
+    .routine-table th,
+    .routine-table td {
+        padding: 3px !important;
+        height: 45px !important;
+        min-width: 0 !important;
+    }
+
+    /* Period + Time black */
+    .routine-table thead th,
+    .routine-table thead th div,
+    .routine-table thead th small {
+        color: #000 !important;
+    }
+
+    .signature-area {
+        margin-top: 50px !important;
+        page-break-after: avoid !important;
+        break-after: avoid-page !important;
+    }
+}
+
+</style>
+
     {% block extra_css %}
     {% endblock %}
 
