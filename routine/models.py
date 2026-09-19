@@ -103,81 +103,87 @@ class Routine(models.Model):
         return f"{self.subject_assignment.subject} - {self.day}"
 
 
-def clean(self):
+    def clean(self):
 
-    if not self.period:
-        return
+        if not self.period:
+            return
 
-    assignment = self.subject_assignment
+        assignment = self.subject_assignment
 
-    current_class = assignment.student_class
-    current_section = assignment.section
-    current_teacher = assignment.teacher
+        current_class = assignment.student_class
+        current_section = assignment.section
+        current_teacher = assignment.teacher
 
-    # ==========================================
-    # COMMON FILTER
-    # Same Month + Same Year + Same Day + Period
-    # ==========================================
+        # =====================================================
+        # COMMON FILTER
+        # Same Month + Year + Day + Period
+        # =====================================================
 
-    base_filter = {
-        "month": self.month,
-        "year": self.year,
-        "day": self.day,
-        "period": self.period,
-        "is_active": True,
-    }
+        base_filter = {
+            "month": self.month,
+            "year": self.year,
+            "day": self.day,
+            "period": self.period,
+            "is_active": True,
+        }
 
-    # ==========================================
-    # 1. SAME SECTION / CLASS
-    # ==========================================
+        # =====================================================
+        # 1. SAME CLASS + SECTION CONFLICT
+        # =====================================================
 
-    section_conflict = Routine.objects.filter(
-        **base_filter,
-        subject_assignment__student_class=current_class,
-        subject_assignment__section=current_section,
-    ).exclude(
-        pk=self.pk
-    )
-
-    if section_conflict.exists():
-
-        raise ValidationError(
-            "This section already has a class "
-            "in this period."
+        section_conflict = Routine.objects.filter(
+            **base_filter,
+            subject_assignment__student_class=current_class,
+            subject_assignment__section=current_section,
+        ).exclude(
+            pk=self.pk
         )
 
-    # ==========================================
-    # 2. SAME TEACHER
-    # ==========================================
+        if section_conflict.exists():
 
-    teacher_conflict = Routine.objects.filter(
-        **base_filter,
-        subject_assignment__teacher=current_teacher,
-    ).exclude(
-        pk=self.pk
-    )
+            raise ValidationError(
+                "This class and section already has another "
+                "class in this period."
+            )
 
-    if teacher_conflict.exists():
+        # =====================================================
+        # 2. SAME TEACHER CONFLICT
+        # =====================================================
 
-        raise ValidationError(
-            f"{current_teacher} already has another "
-            f"class in this period."
+        teacher_conflict = Routine.objects.filter(
+            **base_filter,
+            subject_assignment__teacher=current_teacher,
+        ).exclude(
+            pk=self.pk
         )
 
-    # ==========================================
-    # 3. SAME ROOM
-    # ==========================================
+        if teacher_conflict.exists():
 
-    room_conflict = Routine.objects.filter(
-        **base_filter,
-        room__iexact=self.room.strip(),
-    ).exclude(
-        pk=self.pk
-    )
+            raise ValidationError(
+                f"{current_teacher} already has another "
+                f"class in this period."
+            )
 
-    if room_conflict.exists():
+        # =====================================================
+        # 3. SAME ROOM CONFLICT
+        # =====================================================
 
-        raise ValidationError(
-            f"Room {self.room} is already occupied "
-            f"in this period."
+        room_conflict = Routine.objects.filter(
+            **base_filter,
+            room__iexact=self.room.strip(),
+        ).exclude(
+            pk=self.pk
         )
+
+        if room_conflict.exists():
+
+            raise ValidationError(
+                f"Room {self.room} is already occupied "
+                f"in this period."
+            )
+
+    def save(self, *args, **kwargs):
+
+        self.full_clean()
+
+        super().save(*args, **kwargs)

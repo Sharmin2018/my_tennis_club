@@ -45,7 +45,8 @@
 
     </style>
 
-    <style>
+
+<style>
 
 .routine-info{
     display:grid;
@@ -74,6 +75,10 @@
 }
 
 
+/* =========================================================
+   PRINT CSS
+   ========================================================= */
+
 @media print {
 
     @page {
@@ -81,75 +86,315 @@
         margin: 8mm;
     }
 
+
     html,
     body {
         margin: 0 !important;
         padding: 0 !important;
-        height: 100% !important;
-        overflow: hidden !important;
+
+        height: auto !important;
+
+        overflow: visible !important;
     }
+
+
+    /* =====================================================
+       Hide normal website elements
+       ===================================================== */
 
     body * {
         visibility: hidden !important;
     }
 
+
+    /* =====================================================
+       ROUTINE PRINT
+       ===================================================== */
+
     #routine-print-area,
     #routine-print-area * {
+
         visibility: visible !important;
     }
 
     #routine-print-area {
+
         position: absolute !important;
+
         top: 0 !important;
         left: 0 !important;
+
         width: 100% !important;
+
         height: auto !important;
-        min-height: 0 !important;
+
         margin: 0 !important;
         padding: 0 !important;
-    }
 
-    /* Filter এবং Print button hide */
-    #routine-print-area form,
-    #routine-print-area button,
-    #routine-print-area .btn {
-        display: none !important;
-    }
-
-    /* Table */
-    .table-responsive {
         overflow: visible !important;
     }
 
-    .routine-table {
+
+    /* =====================================================
+       ASSIGNMENT PRINT
+       ===================================================== */
+
+    #assignment-print-area,
+    #assignment-print-area * {
+
+        visibility: visible !important;
+    }
+
+    #assignment-print-area {
+
+        position: absolute !important;
+
+        top: 0 !important;
+        left: 0 !important;
+
         width: 100% !important;
+
+        height: auto !important;
+
         margin: 0 !important;
+        padding: 0 !important;
+
+        overflow: visible !important;
+
+        display: block !important;
+    }
+
+
+    /* =====================================================
+       Hide buttons / filters during print
+       ===================================================== */
+
+    .no-print {
+
+        display: none !important;
+
+        visibility: hidden !important;
+    }
+
+
+    #routine-print-area form,
+    #routine-print-area button,
+    #routine-print-area .btn {
+
+        display: none !important;
+    }
+
+
+    #assignment-print-area .action-column {
+
+        display: none !important;
+    }
+
+
+    /* =====================================================
+       TABLE RESPONSIVE
+       ===================================================== */
+
+    .table-responsive {
+
+        overflow: visible !important;
+
+        display: block !important;
+
+        width: 100% !important;
+    }
+
+
+    /* =====================================================
+       ROUTINE TABLE
+       ===================================================== */
+
+    .routine-table {
+
+        width: 100% !important;
+
+        margin: 0 !important;
+
         page-break-after: avoid !important;
+
         break-after: avoid-page !important;
     }
+
 
     .routine-table th,
     .routine-table td {
+
         padding: 3px !important;
+
         height: 45px !important;
+
         min-width: 0 !important;
     }
 
-    /* Period + Time black */
+
     .routine-table thead th,
     .routine-table thead th div,
     .routine-table thead th small {
+
         color: #000 !important;
     }
 
+
     .signature-area {
+
         margin-top: 50px !important;
+
         page-break-after: avoid !important;
+
         break-after: avoid-page !important;
     }
+
+
+    /* =====================================================
+       ASSIGNMENT TABLE
+       ===================================================== */
+
+    #assignment-print-area table {
+
+        display: table !important;
+
+        visibility: visible !important;
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        margin: 0 !important;
+
+        border-collapse: collapse !important;
+
+        border-spacing: 0 !important;
+    }
+
+
+    #assignment-print-area thead {
+
+        display: table-header-group !important;
+
+        visibility: visible !important;
+    }
+
+
+    #assignment-print-area tbody {
+
+        display: table-row-group !important;
+
+        visibility: visible !important;
+    }
+
+
+    #assignment-print-area tr {
+
+        display: table-row !important;
+
+        visibility: visible !important;
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+    }
+
+
+    #assignment-print-area th,
+    #assignment-print-area td {
+
+        display: table-cell !important;
+
+        visibility: visible !important;
+
+        color: #000 !important;
+
+        background: #fff !important;
+
+        border: 1px solid #000 !important;
+
+        padding: 5px !important;
+
+        font-size: 11px !important;
+
+        vertical-align: middle !important;
+    }
+
+
+    #assignment-print-area th {
+
+        background: #e9e9e9 !important;
+
+        font-weight: bold !important;
+
+        text-align: center !important;
+    }
+
+
+    /* =====================================================
+       ASSIGNMENT PRINT HEADER
+       ===================================================== */
+
+    #assignment-print-area .print-header {
+
+        display: block !important;
+
+        visibility: visible !important;
+
+        text-align: center !important;
+
+        margin-bottom: 15px !important;
+    }
+
+
+    #assignment-print-area .print-header h3 {
+
+        display: block !important;
+
+        visibility: visible !important;
+
+        color: #000 !important;
+
+        font-size: 20px !important;
+
+        margin: 0 0 5px 0 !important;
+    }
+
+
+    #assignment-print-area .print-header p {
+
+        display: block !important;
+
+        visibility: visible !important;
+
+        color: #000 !important;
+
+        font-size: 14px !important;
+
+        margin: 0 0 15px 0 !important;
+    }
+
+
+    /* =====================================================
+       STATUS BADGE
+       ===================================================== */
+
+    #assignment-print-area .badge {
+
+        color: #000 !important;
+
+        background: transparent !important;
+
+        padding: 0 !important;
+
+        border: none !important;
+    }
+
 }
 
 </style>
+
+
 
     {% block extra_css %}
     {% endblock %}

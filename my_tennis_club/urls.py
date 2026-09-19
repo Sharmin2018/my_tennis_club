@@ -27,6 +27,7 @@ urlpatterns = [
     
     # Public Website
     path("", include("website.urls")),
+    
 
 ]
 

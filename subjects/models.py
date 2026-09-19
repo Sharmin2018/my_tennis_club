@@ -115,12 +115,27 @@ class SubjectAssignment(models.Model):
         on_delete=models.CASCADE
     )
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(
+        default=True
+    )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
 
     class Meta:
         ordering = ["subject"]
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "subject",
+                    "student_class",
+                    "section",
+                ],
+                name="unique_subject_class_section_assignment",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.subject} - {self.teacher}"

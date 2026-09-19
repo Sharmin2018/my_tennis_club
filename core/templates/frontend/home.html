@@ -1,0 +1,149 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}
+    {{ school_name }}
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+    .hero-section {
+        position: relative;
+        min-height: 500px;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 750px;
+    }
+
+    .hero-title {
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .hero-subtitle {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .hero-description {
+        font-size: 17px;
+        line-height: 1.7;
+        margin-bottom: 25px;
+    }
+
+    .hero-btn {
+        padding: 12px 28px;
+        font-weight: 600;
+        border-radius: 5px;
+    }
+
+    @media (max-width: 768px) {
+
+        .hero-section {
+            min-height: 420px;
+        }
+
+        .hero-title {
+            font-size: 34px;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+{% if heroes %}
+
+    {% for hero in heroes %}
+
+        <section
+            class="hero-section"
+            {% if hero.background_image %}
+                style="background-image: url('{{ hero.background_image.url }}');"
+            {% endif %}
+        >
+
+            <div class="hero-overlay"></div>
+
+            <div class="container">
+
+                <div class="hero-content">
+
+                    {% if hero.subtitle %}
+                        <div class="hero-subtitle">
+                            {{ hero.subtitle }}
+                        </div>
+                    {% endif %}
+
+                    <h1 class="hero-title">
+                        {{ hero.title }}
+                    </h1>
+
+                    {% if hero.description %}
+                        <p class="hero-description">
+                            {{ hero.description }}
+                        </p>
+                    {% endif %}
+
+                    {% if hero.button_text and hero.button_url %}
+
+                        <a
+                            href="{{ hero.button_url }}"
+                            class="btn btn-primary hero-btn"
+                        >
+                            {{ hero.button_text }}
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+    {% endfor %}
+
+{% else %}
+
+    <section class="py-5">
+        <div class="container text-center">
+
+            <h1>
+                Welcome to {{ school_name }}
+            </h1>
+
+            <p class="lead">
+                Welcome to our official website.
+            </p>
+
+        </div>
+    </section>
+
+{% endif %}
+
+{% endblock %}

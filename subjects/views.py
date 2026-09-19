@@ -1,12 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
-from academics.models import StudentClass
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views import View
 from django.http import JsonResponse
+from django.db.models import Q
+
+from academics.models import StudentClass, Session, Section
+from teachers.models import Teacher
 
 from django.views.generic import (
     ListView,
@@ -19,15 +22,6 @@ from django.views.generic import (
 from .models import SubjectAssignment
 from .forms import SubjectAssignmentForm
 
-
-
-from django.views.generic import (
-    ListView,
-    CreateView,
-    UpdateView,
-    DeleteView,
-    DetailView,
-)
 
 from .models import Subject
 from .forms import SubjectForm
@@ -174,15 +168,76 @@ class SubjectDetailView(
     permission_required = "subjects.view_subject"
 
 
-class SubjectAssignmentListView(ListView):
+class SubjectAssignmentListView(LoginRequiredMixin, ListView):
 
     model = SubjectAssignment
-
     template_name = "subjects/assignment_list.html"
-
     context_object_name = "assignments"
-
     paginate_by = 10
+
+    def get_queryset(self):
+
+        queryset = SubjectAssignment.objects.select_related(
+            "subject",
+            "teacher",
+            "department",
+            "session",
+            "student_class",
+            "section",
+        ).order_by("subject")
+
+        search = self.request.GET.get("search")
+        teacher = self.request.GET.get("teacher")
+        student_class = self.request.GET.get("student_class")
+        section = self.request.GET.get("section")
+
+        if search:
+            queryset = queryset.filter(
+                Q(subject__name__icontains=search) |
+                Q(subject__code__icontains=search) |
+                Q(teacher__name__icontains=search)
+            )
+
+        if teacher:
+            queryset = queryset.filter(
+                teacher_id=teacher
+            )
+
+        if student_class:
+            queryset = queryset.filter(
+                student_class_id=student_class
+            )
+
+        if section:
+            queryset = queryset.filter(
+                section_id=section
+            )
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        context["teachers"] = Teacher.objects.all().order_by("name")
+
+        context["classes"] = StudentClass.objects.all().order_by("id")
+
+        context["sections"] = Section.objects.all().order_by("id")
+
+        context["selected_teacher"] = self.request.GET.get(
+            "teacher", ""
+        )
+
+        context["selected_class"] = self.request.GET.get(
+            "student_class", ""
+        )
+
+        context["selected_section"] = self.request.GET.get(
+            "section", ""
+        )
+
+        return context
 
 
 class SubjectAssignmentCreateView(

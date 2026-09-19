@@ -6,6 +6,9 @@
 
     <div class="card shadow">
 
+        <!-- =====================================================
+             HEADER
+             ===================================================== -->
         <div class="card-header bg-primary text-white">
 
             <div class="d-flex justify-content-between align-items-center">
@@ -18,7 +21,6 @@
                    class="btn btn-light">
 
                     <i class="bi bi-plus-circle"></i>
-
                     Assign Subject
 
                 </a>
@@ -27,40 +29,197 @@
 
         </div>
 
+
         <div class="card-body">
 
-            <!-- Search -->
 
-            <form method="GET" class="row mb-3">
+            <!-- =====================================================
+                 FILTER AREA
+                 ===================================================== -->
+            <div class="no-print">
 
-                <div class="col-md-4">
+                <form method="GET" class="row g-2 mb-3">
 
-                    <input
-                        type="text"
-                        name="search"
-                        value="{{ request.GET.search }}"
-                        class="form-control"
-                        placeholder="Search Subject / Teacher">
+                    <!-- Search -->
+                    <div class="col-md-3">
+
+                        <input
+                            type="text"
+                            name="search"
+                            value="{{ request.GET.search }}"
+                            class="form-control"
+                            placeholder="Search Subject / Teacher"
+                        >
+
+                    </div>
+
+
+                    <!-- Teacher -->
+                    <div class="col-md-2">
+
+                        <select
+                            name="teacher"
+                            class="form-select">
+
+                            <option value="">
+                                All Teachers
+                            </option>
+
+                            {% for teacher in teachers %}
+
+                                <option
+                                    value="{{ teacher.id }}"
+                                    {% if selected_teacher == teacher.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+
+                                    {{ teacher.name }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Class -->
+                    <div class="col-md-2">
+
+                        <select
+                            name="student_class"
+                            class="form-select">
+
+                            <option value="">
+                                All Classes
+                            </option>
+
+                            {% for class in classes %}
+
+                                <option
+                                    value="{{ class.id }}"
+                                    {% if selected_class == class.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+
+                                    {{ class }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Section -->
+                    <div class="col-md-2">
+
+                        <select
+                            name="section"
+                            class="form-select">
+
+                            <option value="">
+                                All Sections
+                            </option>
+
+                            {% for section in sections %}
+
+                                <option
+                                    value="{{ section.id }}"
+                                    {% if selected_section == section.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+
+                                    {{ section }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Search Button -->
+                    <div class="col-md-1">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100">
+
+                            <i class="bi bi-search"></i>
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- Reset Button -->
+                    <div class="col-md-1">
+
+                        <a
+                            href="{% url 'subject_assignment_list' %}"
+                            class="btn btn-secondary w-100">
+
+                            <i class="bi bi-arrow-clockwise"></i>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- Print Button -->
+                    <div class="col-md-1">
+
+                        <button
+                            type="button"
+                            class="btn btn-dark w-100"
+                            onclick="window.print()">
+
+                            <i class="bi bi-printer"></i>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- =====================================================
+                 PRINT AREA
+                 ===================================================== -->
+            <div
+                class="table-responsive"
+                id="assignment-print-area">
+
+
+                <!-- Print Heading -->
+                <div class="print-header">
+
+                    
+
+                    <p>
+                        Halishahar Alhaj Mohabbat Ali City Corporation High School
+                    </p>
+                    <h3>
+                        Subject Assignment List
+                    </h3>
 
                 </div>
 
-                <div class="col-md-2">
 
-                    <button
-                        class="btn btn-primary">
-
-                        <i class="bi bi-search"></i>
-
-                        Search
-
-                    </button>
-
-                </div>
-
-            </form>
-
-            <div class="table-responsive">
-
+                <!-- =================================================
+                     TABLE
+                     ================================================= -->
                 <table class="table table-bordered table-hover">
 
                     <thead class="table-dark">
@@ -83,7 +242,9 @@
 
                             <th>Status</th>
 
-                            <th width="220">
+                            <th
+                                class="action-column"
+                                width="220">
 
                                 Action
 
@@ -93,117 +254,146 @@
 
                     </thead>
 
+
                     <tbody>
 
-                    {% for assignment in assignments %}
+                        {% for assignment in assignments %}
 
-                     <tr id="row-{{ assignment.pk }}">
-                        <td>
+                        <tr id="row-{{ assignment.pk }}">
 
-                            {{ forloop.counter }}
+                            <!-- SL -->
+                            <td>
 
-                        </td>
+                                {{ forloop.counter }}
 
-                        <td>
+                            </td>
 
-                            {{ assignment.subject }}
 
-                        </td>
+                            <!-- Subject -->
+                            <td>
 
-                        <td>
+                                {{ assignment.subject }}
 
-                            {{ assignment.teacher }}
+                            </td>
 
-                        </td>
 
-                        <td>
+                            <!-- Teacher -->
+                            <td>
 
-                            {{ assignment.department }}
+                                {{ assignment.teacher }}
 
-                        </td>
+                            </td>
 
-                        <td>
 
-                            {{ assignment.session }}
+                            <!-- Department -->
+                            <td>
 
-                        </td>
+                                {{ assignment.department }}
 
-                        <td>
+                            </td>
 
-                            {{ assignment.student_class }}
 
-                        </td>
+                            <!-- Session -->
+                            <td>
 
-                        <td>
+                                {{ assignment.session }}
 
-                            {{ assignment.section }}
+                            </td>
 
-                        </td>
 
-                        <td>
+                            <!-- Class -->
+                            <td>
 
-                            {% if assignment.is_active %}
+                                {{ assignment.student_class }}
 
-                                <span class="badge bg-success">
+                            </td>
 
-                                    Active
 
-                                </span>
+                            <!-- Section -->
+                            <td>
 
-                            {% else %}
+                                {{ assignment.section }}
 
-                                <span class="badge bg-danger">
+                            </td>
 
-                                    Inactive
 
-                                </span>
+                            <!-- Status -->
+                            <td>
 
-                            {% endif %}
+                                {% if assignment.is_active %}
 
-                        </td>
+                                    <span class="badge bg-success">
 
-                        <td>
+                                        Active
 
-                            <a
-                                href="{% url 'subject_assignment_detail' assignment.pk %}"
-                                class="btn btn-info btn-sm">
+                                    </span>
 
-                                <i class="bi bi-eye"></i>
+                                {% else %}
 
-                            </a>
+                                    <span class="badge bg-danger">
 
-                            <a
-                                href="{% url 'subject_assignment_edit' assignment.pk %}"
-                                class="btn btn-warning btn-sm">
+                                        Inactive
 
-                                <i class="bi bi-pencil-square"></i>
+                                    </span>
 
-                            </a>
+                                {% endif %}
 
-                           <button
-                                type="button"
-                                class="btn btn-danger btn-sm delete-btn"
-                                 data-id="{{ assignment.id }}">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                            </td>
 
-                        </td>
 
-                    </tr>
+                            <!-- Action -->
+                            <td class="action-column">
 
-                    {% empty %}
+                                <!-- Details -->
+                                <a
+                                    href="{% url 'subject_assignment_detail' assignment.pk %}"
+                                    class="btn btn-info btn-sm">
 
-                    <tr>
+                                    <i class="bi bi-eye"></i>
 
-                        <td colspan="9" class="text-center">
+                                </a>
 
-                            No Subject Assignment Found.
 
-                        </td>
+                                <!-- Edit -->
+                                <a
+                                    href="{% url 'subject_assignment_edit' assignment.pk %}"
+                                    class="btn btn-warning btn-sm">
 
-                    </tr>
+                                    <i class="bi bi-pencil-square"></i>
 
-                    {% endfor %}
+                                </a>
+
+
+                                <!-- Delete -->
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-sm delete-btn"
+                                    data-id="{{ assignment.id }}">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="9"
+                                class="text-center">
+
+                                No Subject Assignment Found.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
 
                     </tbody>
 
@@ -211,85 +401,112 @@
 
             </div>
 
-            <!-- Pagination -->
 
-            {% if is_paginated %}
+            <!-- =====================================================
+                 PAGINATION
+                 ===================================================== -->
+            <div class="no-print">
 
-            <nav>
+                {% if is_paginated %}
 
-                <ul class="pagination justify-content-center">
+                <nav>
 
-                    {% if page_obj.has_previous %}
+                    <ul class="pagination justify-content-center">
 
-                    <li class="page-item">
+                        {% if page_obj.has_previous %}
 
-                        <a
-                            class="page-link"
-                            href="?page={{ page_obj.previous_page_number }}">
+                        <li class="page-item">
 
-                            Previous
+                            <a
+                                class="page-link"
+                                href="?page={{ page_obj.previous_page_number }}&search={{ request.GET.search }}&teacher={{ request.GET.teacher }}&student_class={{ request.GET.student_class }}&section={{ request.GET.section }}">
 
-                        </a>
+                                Previous
 
-                    </li>
+                            </a>
 
-                    {% endif %}
+                        </li>
 
-                    <li class="page-item active">
+                        {% endif %}
 
-                        <span class="page-link">
 
-                            {{ page_obj.number }}
+                        <li class="page-item active">
 
-                        </span>
+                            <span class="page-link">
 
-                    </li>
+                                {{ page_obj.number }}
 
-                    {% if page_obj.has_next %}
+                            </span>
 
-                    <li class="page-item">
+                        </li>
 
-                        <a
-                            class="page-link"
-                            href="?page={{ page_obj.next_page_number }}">
 
-                            Next
+                        {% if page_obj.has_next %}
 
-                        </a>
+                        <li class="page-item">
 
-                    </li>
+                            <a
+                                class="page-link"
+                                href="?page={{ page_obj.next_page_number }}&search={{ request.GET.search }}&teacher={{ request.GET.teacher }}&student_class={{ request.GET.student_class }}&section={{ request.GET.section }}">
 
-                    {% endif %}
+                                Next
 
-                </ul>
+                            </a>
 
-            </nav>
+                        </li>
 
-            {% endif %}
+                        {% endif %}
+
+                    </ul>
+
+                </nav>
+
+                {% endif %}
+
+            </div>
+
 
         </div>
 
     </div>
+
 </div>
 
+
+<!-- =============================================================
+     DELETE AJAX
+     ============================================================= -->
+
 <script>
+
 $(function () {
 
     $(".delete-btn").click(function () {
 
         let id = $(this).data("id");
 
+
         Swal.fire({
+
             title: "Are you sure?",
+
             text: "This assignment will be deleted!",
+
             icon: "warning",
+
             showCancelButton: true,
+
             confirmButtonColor: "#d33",
+
             cancelButtonColor: "#3085d6",
+
             confirmButtonText: "Yes, Delete"
+
         }).then((result) => {
 
+
             if (result.isConfirmed) {
+
 
                 $.ajax({
 
@@ -298,29 +515,46 @@ $(function () {
                     type: "POST",
 
                     headers: {
+
                         "X-CSRFToken": "{{ csrf_token }}"
+
                     },
 
-                    success: function(response){
+
+                    success: function (response) {
+
 
                         Swal.fire({
-                            icon:"success",
-                            title:"Deleted!",
-                            text:response.message,
-                            timer:1500,
-                            showConfirmButton:false
+
+                            icon: "success",
+
+                            title: "Deleted!",
+
+                            text: response.message,
+
+                            timer: 1500,
+
+                            showConfirmButton: false
+
                         });
 
-                        $("#row-"+id).remove();
+
+                        $("#row-" + id).remove();
 
                     },
 
-                    error:function(){
+
+                    error: function () {
+
 
                         Swal.fire({
-                            icon:"error",
-                            title:"Error",
-                            text:"Delete failed."
+
+                            icon: "error",
+
+                            title: "Error",
+
+                            text: "Delete failed."
+
                         });
 
                     }
@@ -334,7 +568,32 @@ $(function () {
     });
 
 });
+
 </script>
 
-{% endblock %}
 
+<!-- =============================================================
+     PRINT CSS
+     ============================================================= -->
+
+
+<style>
+
+.print-header {
+    display: none;
+}
+
+@media print {
+
+    .print-header {
+        display: block !important;
+        text-align: center;
+    }
+
+}
+
+</style>
+
+
+
+{% endblock %}

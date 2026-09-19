@@ -161,40 +161,51 @@ class SubjectForm(forms.ModelForm):
 # SUBJECT ASSIGNMENT FORM
 # =========================================================
 
+from django import forms
+from .models import SubjectAssignment
+
+
 class SubjectAssignmentForm(forms.ModelForm):
 
     class Meta:
-
         model = SubjectAssignment
 
-        fields = "__all__"
+        fields = [
+            "subject",
+            "teacher",
+            "department",
+            "session",
+            "student_class",
+            "section",
+            "is_active",
+        ]
 
-        widgets = {
-            "subject": forms.Select(
-                attrs={"class": "form-select"}
-            ),
+    def clean(self):
 
-            "teacher": forms.Select(
-                attrs={"class": "form-select"}
-            ),
+        cleaned_data = super().clean()
 
-            "department": forms.Select(
-                attrs={"class": "form-select"}
-            ),
+        subject = cleaned_data.get("subject")
+        student_class = cleaned_data.get("student_class")
+        section = cleaned_data.get("section")
 
-            "session": forms.Select(
-                attrs={"class": "form-select"}
-            ),
+        if subject and student_class and section:
 
-            "student_class": forms.Select(
-                attrs={"class": "form-select"}
-            ),
+            duplicate = SubjectAssignment.objects.filter(
+                subject=subject,
+                student_class=student_class,
+                section=section,
+            )
 
-            "section": forms.Select(
-                attrs={"class": "form-select"}
-            ),
+            # Edit করার সময় নিজের record বাদ দিতে হবে
+            if self.instance.pk:
+                duplicate = duplicate.exclude(
+                    pk=self.instance.pk
+                )
 
-            "is_active": forms.CheckboxInput(
-                attrs={"class": "form-check-input"}
-            ),
-        }
+            if duplicate.exists():
+
+                raise forms.ValidationError(
+                    "This subject is already assigned to this class and section."
+                )
+
+        return cleaned_data

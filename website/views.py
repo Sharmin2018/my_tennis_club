@@ -1,20 +1,20 @@
+
 from django.shortcuts import render
 
-
-from django.views.generic import TemplateView
-
-
-class HomeView(TemplateView):
-    template_name = "website/home.html"
+from .models import HomeHero
 
 
-class AboutView(TemplateView):
-    template_name = "website/about.html"
+def home(request):
+    heroes = (
+        HomeHero.objects
+        .filter(is_active=True)
+        .order_by("order", "id")
+    )
 
-
-class GalleryView(TemplateView):
-    template_name = "website/gallery.html"
-
-
-class ContactView(TemplateView):
-    template_name = "website/contact.html"
+    return render(
+        request,
+        "frontend/home.html",
+        {
+            "heroes": heroes,
+        }
+    )
