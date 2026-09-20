@@ -67,3 +67,33 @@ class HomeHero(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class AboutSection(models.Model):
+    title = models.CharField(
+        max_length=200,
+        default="About Our School"
+    )
+
+    short_description = models.TextField()
+
+    image = models.ImageField(
+        upload_to="website/about/",
+        blank=True,
+        null=True
+    )
+
+    button_text = models.CharField(
+        max_length=100,
+        default="Read More"
+    )
+
+    button_url = models.CharField(
+        max_length=255,
+        default="/about/"
+    )
+
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import NavigationMenu, WebsiteSettings, HomeHero
+from .models import NavigationMenu, WebsiteSettings, HomeHero, AboutSection
+   
 
 
 @admin.register(NavigationMenu)
@@ -42,4 +43,21 @@ class HomeHeroAdmin(admin.ModelAdmin):
     ordering = (
         "order",
         "id",
+    )
+
+@admin.register(AboutSection)
+class AboutSectionAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "title",
+        "is_active",
+    )
+
+    list_filter = (
+        "is_active",
+    )
+
+    search_fields = (
+        "title",
+        "short_description",
     )

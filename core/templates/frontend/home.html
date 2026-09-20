@@ -9,10 +9,10 @@
 <style>
 
     .hero-section {
-        position: relative;
-        min-height: 500px;
+        min-height: 520px;
         background-size: cover;
         background-position: center;
+        position: relative;
         display: flex;
         align-items: center;
         color: white;
@@ -53,10 +53,21 @@
         border-radius: 5px;
     }
 
+    .hero-carousel .carousel-control-prev,
+    .hero-carousel .carousel-control-next {
+        width: 8%;
+    }
+
+    .hero-carousel .carousel-indicators button {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
+
     @media (max-width: 768px) {
 
         .hero-section {
-            min-height: 420px;
+            min-height: 430px;
         }
 
         .hero-title {
@@ -65,6 +76,10 @@
 
         .hero-subtitle {
             font-size: 20px;
+        }
+
+        .hero-description {
+            font-size: 15px;
         }
 
     }
@@ -78,71 +93,229 @@
 
 {% if heroes %}
 
-    {% for hero in heroes %}
+<div id="homeHeroCarousel"
+     class="carousel slide hero-carousel"
+     data-bs-ride="carousel"
+     data-bs-interval="5000">
 
-        <section
-            class="hero-section"
-            {% if hero.background_image %}
-                style="background-image: url('{{ hero.background_image.url }}');"
-            {% endif %}
-        >
+    {% if heroes|length > 1 %}
 
-            <div class="hero-overlay"></div>
+        <div class="carousel-indicators">
 
-            <div class="container">
+            {% for hero in heroes %}
 
-                <div class="hero-content">
+                <button
+                    type="button"
+                    data-bs-target="#homeHeroCarousel"
+                    data-bs-slide-to="{{ forloop.counter0 }}"
+                    {% if forloop.first %}
+                        class="active"
+                        aria-current="true"
+                    {% endif %}
+                    aria-label="Slide {{ forloop.counter }}"
+                ></button>
 
-                    {% if hero.subtitle %}
-                        <div class="hero-subtitle">
-                            {{ hero.subtitle }}
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="carousel-inner">
+
+        {% for hero in heroes %}
+
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+
+                <section
+                    class="hero-section"
+                    {% if hero.background_image %}
+                        style="background-image: url('{{ hero.background_image.url }}');"
+                    {% endif %}
+                >
+
+                    <div class="hero-overlay"></div>
+
+                    <div class="container">
+
+                        <div class="hero-content">
+
+                            {% if hero.subtitle %}
+
+                                <div class="hero-subtitle">
+                                    {{ hero.subtitle }}
+                                </div>
+
+                            {% endif %}
+
+
+                            <h1 class="hero-title">
+                                {{ hero.title }}
+                            </h1>
+
+
+                            {% if hero.description %}
+
+                                <p class="hero-description">
+                                    {{ hero.description }}
+                                </p>
+
+                            {% endif %}
+
+
+                            {% if hero.button_text and hero.button_url %}
+
+                                <a
+                                    href="{{ hero.button_url }}"
+                                    class="btn btn-primary hero-btn"
+                                >
+                                    {{ hero.button_text }}
+                                </a>
+
+                            {% endif %}
+
                         </div>
-                    {% endif %}
 
-                    <h1 class="hero-title">
-                        {{ hero.title }}
-                    </h1>
+                    </div>
 
-                    {% if hero.description %}
-                        <p class="hero-description">
-                            {{ hero.description }}
-                        </p>
-                    {% endif %}
-
-                    {% if hero.button_text and hero.button_url %}
-
-                        <a
-                            href="{{ hero.button_url }}"
-                            class="btn btn-primary hero-btn"
-                        >
-                            {{ hero.button_text }}
-                        </a>
-
-                    {% endif %}
-
-                </div>
+                </section>
 
             </div>
 
-        </section>
+        {% endfor %}
 
-    {% endfor %}
+    </div>
+
+
+    {% if heroes|length > 1 %}
+
+        <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#homeHeroCarousel"
+            data-bs-slide="prev"
+        >
+
+            <span
+                class="carousel-control-prev-icon"
+                aria-hidden="true">
+            </span>
+
+            <span class="visually-hidden">
+                Previous
+            </span>
+
+        </button>
+
+
+        <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#homeHeroCarousel"
+            data-bs-slide="next"
+        >
+
+            <span
+                class="carousel-control-next-icon"
+                aria-hidden="true">
+            </span>
+
+            <span class="visually-hidden">
+                Next
+            </span>
+
+        </button>
+
+    {% endif %}
+
+</div>
+
+{% if about %}
+
+<section class="py-5 bg-light">
+
+    <div class="container">
+
+        <div class="row align-items-center g-5">
+
+            <!-- About Image -->
+            <div class="col-lg-5">
+
+                {% if about.image %}
+
+                    <img
+                        src="{{ about.image.url }}"
+                        alt="{{ about.title }}"
+                        class="img-fluid rounded shadow w-100"
+                    >
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- About Content -->
+            <div class="col-lg-7">
+
+                <div class="mb-3">
+
+                    <span class="text-primary fw-semibold">
+                        ABOUT US
+                    </span>
+
+                </div>
+
+                <h2 class="fw-bold mb-3">
+                    {{ about.title }}
+                </h2>
+
+                <p class="text-muted"
+                   style="line-height: 1.8;">
+
+                    {{ about.short_description }}
+
+                </p>
+
+
+                {% if about.button_text and about.button_url %}
+
+                    <a
+                        href="{{ about.button_url }}"
+                        class="btn btn-primary mt-3 px-4 py-2"
+                    >
+                        {{ about.button_text }}
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
 
 {% else %}
 
-    <section class="py-5">
-        <div class="container text-center">
+<section class="py-5">
 
-            <h1>
-                Welcome to {{ school_name }}
-            </h1>
+    <div class="container text-center">
 
-            <p class="lead">
-                Welcome to our official website.
-            </p>
+        <h1>
+            Welcome to {{ school_name }}
+        </h1>
 
-        </div>
-    </section>
+        <p class="lead">
+            Welcome to our official website.
+        </p>
+
+    </div>
+
+</section>
 
 {% endif %}
 
